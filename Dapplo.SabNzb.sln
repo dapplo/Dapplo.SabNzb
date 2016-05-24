@@ -5,7 +5,17 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.SabNzb", "Dapplo.SabNzb\Dapplo.SabNzb.csproj", "{85FCA757-1D9F-47C0-8600-468D055AB50F}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Dapplo.SabNzb.Shared", "Dapplo.SabNzb.Sahred\Dapplo.SabNzb.Shared.shproj", "{418B039F-F334-4424-BA3B-1335C740ED3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.SabNzb.Pcl", "Dapplo.SabNzb.Pcl\Dapplo.SabNzb.Pcl.csproj", "{AF89D0BA-BDF9-45F1-8476-951EAF4C61B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.SabNzb.Tests", "Dapplo.SabNzb.Tests\Dapplo.SabNzb.Tests.csproj", "{10422AFE-843F-45BF-AE95-ABDCB7978C12}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Dapplo.SabNzb.Shared\Dapplo.SabNzb.Shared.projitems*{418b039f-f334-4424-ba3b-1335c740ed3f}*SharedItemsImports = 13
+		Dapplo.SabNzb.Shared\Dapplo.SabNzb.Shared.projitems*{85fca757-1d9f-47c0-8600-468d055ab50f}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -15,6 +25,14 @@ Global
 		{85FCA757-1D9F-47C0-8600-468D055AB50F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85FCA757-1D9F-47C0-8600-468D055AB50F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85FCA757-1D9F-47C0-8600-468D055AB50F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF89D0BA-BDF9-45F1-8476-951EAF4C61B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF89D0BA-BDF9-45F1-8476-951EAF4C61B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF89D0BA-BDF9-45F1-8476-951EAF4C61B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF89D0BA-BDF9-45F1-8476-951EAF4C61B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10422AFE-843F-45BF-AE95-ABDCB7978C12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10422AFE-843F-45BF-AE95-ABDCB7978C12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10422AFE-843F-45BF-AE95-ABDCB7978C12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10422AFE-843F-45BF-AE95-ABDCB7978C12}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

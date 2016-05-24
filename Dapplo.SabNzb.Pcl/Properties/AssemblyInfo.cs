@@ -22,7 +22,7 @@
 #region using
 
 using System.Reflection;
-using System.Runtime.InteropServices;
+using System.Resources;
 
 #endregion
 
@@ -30,24 +30,15 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Dapplo.SabNzb")]
+[assembly: AssemblyTitle("Dapplo.SabNzb.Pcl")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Dapplo.SabNzb")]
+[assembly: AssemblyProduct("Dapplo.SabNzb.Pcl")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
-
-[assembly: ComVisible(false)]
-
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-
-[assembly: Guid("85fca757-1d9f-47c0-8600-468d055ab50f")]
+[assembly: NeutralResourcesLanguage("en")]
 
 // Version information for an assembly consists of the following four values:
 //

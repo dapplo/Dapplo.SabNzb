@@ -30,11 +30,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Dapplo.SabNzb")]
+[assembly: AssemblyTitle("Dapplo.SabNzb.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Dapplo.SabNzb")]
+[assembly: AssemblyProduct("Dapplo.SabNzb.Tests")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -47,7 +47,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid("85fca757-1d9f-47c0-8600-468d055ab50f")]
+[assembly: Guid("10422afe-843f-45bf-ae95-abdcb7978c12")]
 
 // Version information for an assembly consists of the following four values:
 //
