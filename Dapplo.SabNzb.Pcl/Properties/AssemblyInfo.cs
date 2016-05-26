@@ -30,11 +30,11 @@ using System.Resources;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Dapplo.SabNzb.Pcl")]
+[assembly: AssemblyTitle("Dapplo.SabNzb")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Dapplo.SabNzb.Pcl")]
+[assembly: AssemblyProduct("Dapplo.SabNzb")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
