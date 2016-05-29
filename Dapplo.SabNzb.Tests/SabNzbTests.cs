@@ -61,5 +61,12 @@ namespace Dapplo.SabNzb.Tests
 			var queue = await _sabNzbClient.GetQueueAsync();
 			Assert.NotNull(queue);
 		}
+
+		[Fact]
+		public async Task TestGetHistory()
+		{
+			var history = await _sabNzbClient.GetHistoryAsync();
+			Assert.NotNull(history);
+		}
 	}
 }
