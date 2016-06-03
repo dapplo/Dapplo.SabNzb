@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="Dapplo.SabNzb.Client.Views.ConnectionView"
+			xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+			xmlns:behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
+			xmlns:cal="http://www.caliburnproject.org">
+	<StackPanel>
+		<DockPanel LastChildFill="True">
+			<Label Content="{Binding ConnectionTranslations.LabelSabNzbUri}" Width="100" />
+			<TextBox x:Name="ConnectionConfiguration_SabNzbUri" controls:TextBoxHelper.ClearTextButton="True" />
+		</DockPanel>
+		<DockPanel LastChildFill="True">
+			<Label Content="{Binding ConnectionTranslations.LabelApiKey}" Width="100" />
+			<PasswordBox behaviours:PasswordBoxBindingBehavior.Password="{Binding ConnectionConfiguration.ApiKey, Mode=TwoWay}"
+						controls:TextBoxHelper.ClearTextButton="True" />
+		</DockPanel>
+		<UniformGrid>
+			<Button x:Name="Connect" Content="{Binding ConnectionTranslations.Connect}" />
+			<Button x:Name="Cancel" Content="{Binding ConnectionTranslations.Cancel}" />
+		</UniformGrid>
+	</StackPanel>
+</UserControl>

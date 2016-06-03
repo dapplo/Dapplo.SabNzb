@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.SabNzb.Tests", "Dapp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.SabNzb.Pcl", "Dapplo.SabNzb.Pcl\Dapplo.SabNzb.Pcl.csproj", "{3D93C5EB-03FA-4F4D-AECD-E1A533329B7B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.SabNzb.Client", "Dapplo.SabNzb.Client\Dapplo.SabNzb.Client.csproj", "{1A8A2F6B-EDA9-48EC-A1E8-A225F63C006D}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Dapplo.SabNzb.Shared\Dapplo.SabNzb.Shared.projitems*{418b039f-f334-4424-ba3b-1335c740ed3f}*SharedItemsImports = 13
@@ -34,6 +36,10 @@ Global
 		{3D93C5EB-03FA-4F4D-AECD-E1A533329B7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D93C5EB-03FA-4F4D-AECD-E1A533329B7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D93C5EB-03FA-4F4D-AECD-E1A533329B7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A8A2F6B-EDA9-48EC-A1E8-A225F63C006D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A8A2F6B-EDA9-48EC-A1E8-A225F63C006D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A8A2F6B-EDA9-48EC-A1E8-A225F63C006D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A8A2F6B-EDA9-48EC-A1E8-A225F63C006D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

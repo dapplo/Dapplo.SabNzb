@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<language>
+	<resources prefix="connection">
+		<resource name="label_sabnzb_uri">Url to SabNZB:</resource>
+		<resource name="label_apikey">Api Key:</resource>
+		<resource name="connect">Connect</resource>
+		<resource name="cancel">Cancel</resource>
+	</resources>
+</language>
