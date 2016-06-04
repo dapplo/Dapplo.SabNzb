@@ -36,7 +36,7 @@ namespace SabnzbdClient.Client.Entities
 		public string ActionLine { get; set; }
 
 		[DataMember(Name = "avg_age", EmitDefaultValue = false)]
-		public string AVGAge { get; set; }
+		public string AverageAge { get; set; }
 
 		[DataMember(Name = "bytes", EmitDefaultValue = false)]
 		public long Bytes { get; set; }
@@ -87,7 +87,7 @@ namespace SabnzbdClient.Client.Entities
 		public string Name { get; set; }
 
 		[DataMember(Name = "nzb_name", EmitDefaultValue = false)]
-		public string NZBName { get; set; }
+		public string NzbName { get; set; }
 
 		[DataMember(Name = "nzo_id", EmitDefaultValue = false)]
 		public string NZOId { get; set; }

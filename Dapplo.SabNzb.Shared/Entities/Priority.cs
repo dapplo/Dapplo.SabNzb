@@ -19,21 +19,15 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.SabNzb. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
-
-using System.ComponentModel;
-using Dapplo.Config.Language;
-
-#endregion
-
-namespace Dapplo.SabNzb.Client.Languages
+namespace Dapplo.SabNzb.Entities
 {
-	[Language("Connection")]
-	public interface IConnectionTranslations : ILanguage, INotifyPropertyChanged
+	public enum Priority
 	{
-		string Cancel { get; }
-		string Connect { get; }
-		string LabelApiKey { get; }
-		string LabelSabNzbUri { get; }
+		Default = -100,
+		Paused = -2,
+		Low = -1,
+		Normal = 0,
+		High = 1,
+		Force = 2
 	}
 }

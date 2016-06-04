@@ -21,19 +21,17 @@
 
 #region using
 
-using System.ComponentModel;
-using Dapplo.Config.Language;
+using System.Runtime.Serialization;
 
 #endregion
 
-namespace Dapplo.SabNzb.Client.Languages
+namespace Dapplo.SabNzb.Entities
 {
-	[Language("Connection")]
-	public interface IConnectionTranslations : ILanguage, INotifyPropertyChanged
+	public enum EndOfQueueActions
 	{
-		string Cancel { get; }
-		string Connect { get; }
-		string LabelApiKey { get; }
-		string LabelSabNzbUri { get; }
+		[EnumMember(Value = "hibernate_pc")] Hibernate,
+		[EnumMember(Value = "standby_pc")] Standby,
+		[EnumMember(Value = "shutdown_program")] Exit,
+		[EnumMember(Value = "script_")] Script
 	}
 }

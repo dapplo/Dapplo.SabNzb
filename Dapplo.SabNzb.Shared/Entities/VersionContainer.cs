@@ -1,4 +1,4 @@
-﻿//  Dapplo - building blocks for desktop applications
+//  Dapplo - building blocks for desktop applications
 //  Copyright (C) 2016 Dapplo
 // 
 //  For more information see: http://dapplo.net/
@@ -21,19 +21,16 @@
 
 #region using
 
-using System.ComponentModel;
-using Dapplo.Config.Language;
+using System.Runtime.Serialization;
 
 #endregion
 
-namespace Dapplo.SabNzb.Client.Languages
+namespace SabnzbdClient.Client.Entities
 {
-	[Language("Connection")]
-	public interface IConnectionTranslations : ILanguage, INotifyPropertyChanged
+	[DataContract]
+	public class VersionContainer
 	{
-		string Cancel { get; }
-		string Connect { get; }
-		string LabelApiKey { get; }
-		string LabelSabNzbUri { get; }
+		[DataMember(Name = "version", EmitDefaultValue = false)]
+		public string Version { get; set; }
 	}
 }
