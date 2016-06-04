@@ -4,7 +4,15 @@
 	<resources prefix="connection">
 		<resource name="label_sabnzb_uri">Url to SabNZB:</resource>
 		<resource name="label_apikey">Api Key:</resource>
+		<resource name="label_usehttpauthentication">Activate HTTP-Authentication</resource>
+		<resource name="label_username">Username</resource>
+		<resource name="label_password">Password</resource>
 		<resource name="connect">Connect</resource>
 		<resource name="cancel">Cancel</resource>
+	</resources>
+	<resources prefix="contextmenu">
+		<resource name="show_main">Show state</resource>
+		<resource name="configure">Configure</resource>
+		<resource name="exit">Exit</resource>
 	</resources>
 </language>

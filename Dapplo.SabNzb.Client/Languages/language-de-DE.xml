@@ -3,8 +3,16 @@
 <language>
 	<resources prefix="connection">
 		<resource name="label_sabnzb_uri">Url für SabNZB system:</resource>
-		<resource name="label_apikey">Api schlüßel</resource>
+		<resource name="label_apikey">Api schlüssel</resource>
+		<resource name="label_usehttpauthentication">Aktiviere HTTP-Authentifizierung</resource>
+		<resource name="label_username">Benutzer</resource>
+		<resource name="label_password">Passwort</resource>
 		<resource name="connect">Verbinden</resource>
 		<resource name="cancel">Abbrechen</resource>
+	</resources>
+	<resources prefix="contextmenu">
+		<resource name="show_main">Status anzeigen</resource>
+		<resource name="configure">Einstellungen</resource>
+		<resource name="exit">Abschliessen</resource>
 	</resources>
 </language>

@@ -59,7 +59,7 @@ namespace SabnzbdClient.Client.Entities
 		public string DiskspaceTotal2 { get; set; }
 
 		[DataMember(Name = "eta", EmitDefaultValue = false)]
-		public string ETA { get; set; }
+		public string Eta { get; set; }
 
 		[DataMember(Name = "finishaction", EmitDefaultValue = false)]
 		public object FinishAction { get; set; }
@@ -68,10 +68,10 @@ namespace SabnzbdClient.Client.Entities
 		public string HaveWarnings { get; set; }
 
 		[DataMember(Name = "helpuri", EmitDefaultValue = false)]
-		public string HelpURI { get; set; }
+		public string HelpUri { get; set; }
 
 		[DataMember(Name = "kbpersec", EmitDefaultValue = false)]
-		public string KBPerSec { get; set; }
+		public string KbPerSec { get; set; }
 
 		[DataMember(Name = "last_warning", EmitDefaultValue = false)]
 		public string LastWarning { get; set; }
@@ -80,13 +80,13 @@ namespace SabnzbdClient.Client.Entities
 		public int Limit { get; set; }
 
 		[DataMember(Name = "loadavg", EmitDefaultValue = false)]
-		public string LoadAVG { get; set; }
+		public string LoadAverage { get; set; }
 
 		[DataMember(Name = "mb", EmitDefaultValue = false)]
-		public string MB { get; set; }
+		public string Mb { get; set; }
 
 		[DataMember(Name = "mbleft", EmitDefaultValue = false)]
-		public string MBLeft { get; set; }
+		public string MbLeft { get; set; }
 
 		[DataMember(Name = "month_size", EmitDefaultValue = false)]
 		public string MonthSize { get; set; }
@@ -101,10 +101,10 @@ namespace SabnzbdClient.Client.Entities
 		public int NoOfSlots { get; set; }
 
 		[DataMember(Name = "nt", EmitDefaultValue = false)]
-		public bool NT { get; set; }
+		public bool Nt { get; set; }
 
 		[DataMember(Name = "nzb_quota", EmitDefaultValue = false)]
-		public string NZBQuota { get; set; }
+		public string NzbQuota { get; set; }
 
 		[DataMember(Name = "paused", EmitDefaultValue = false)]
 		public bool Paused { get; set; }

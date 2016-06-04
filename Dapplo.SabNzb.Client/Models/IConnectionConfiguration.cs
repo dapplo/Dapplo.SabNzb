@@ -23,6 +23,7 @@
 
 using System;
 using System.ComponentModel;
+using Dapplo.Config.Converters;
 using Dapplo.Config.Ini;
 
 #endregion
@@ -32,7 +33,22 @@ namespace Dapplo.SabNzb.Client.Models
 	[IniSection("Connection")]
 	public interface IConnectionConfiguration : IIniSection, INotifyPropertyChanged
 	{
+		[Description("The API key to access the SabNZB server")]
+		[TypeConverter(typeof(StringEncryptionTypeConverter))]
 		string ApiKey { get; set; }
+
+		[Description("Password for the Http Basic Authentication, for when e.g. an Apache before the SabNzb server needs this.")]
+		[TypeConverter(typeof(StringEncryptionTypeConverter))]
+		string Password { get; set; }
+
+		[Description("The Uri to the SabNZB server.")]
 		Uri SabNzbUri { get; set; }
+
+		[DefaultValue(false), Description("True to activate Http Basic Authentication, for when e.g. an Apache before the SabNzb server needs this.")]
+		bool UseHttpAuthentication { get; set; }
+
+		[Description("Username for the Http Basic Authentication, for when e.g. an Apache before the SabNzb server needs this.")]
+		[TypeConverter(typeof(StringEncryptionTypeConverter))]
+		string Username { get; set; }
 	}
 }

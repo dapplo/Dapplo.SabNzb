@@ -25,6 +25,7 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using Dapplo.CaliburnMicro;
+using Dapplo.Config.Converters;
 using Dapplo.LogFacade;
 using Dapplo.LogFacade.Loggers;
 
@@ -46,7 +47,7 @@ namespace Dapplo.SabNzb.Client
 #endif
 			var application = new Dapplication("Dapplo.CaliburnMicro.Demo", "f32dbad8-9904-473e-86e2-19275c2d06a5")
 			{
-				ShutdownMode = ShutdownMode.OnLastWindowClose
+				ShutdownMode = ShutdownMode.OnExplicitShutdown
 			};
 			application.Add(@".", "Dapplo.CaliburnMicro.dll");
 			// Comment this if no TrayIcons should be used
@@ -54,6 +55,9 @@ namespace Dapplo.SabNzb.Client
 			// Comment this to use the default window manager
 			application.Add(@".", "Dapplo.CaliburnMicro.Metro.dll");
 			application.Add(typeof(Startup).Assembly);
+
+			StringEncryptionTypeConverter.RgbIv = "0@94hFj3&E4r!k231E!";
+			StringEncryptionTypeConverter.RgbKey = "lkfwWF/63)=ßDeefkez4§Rf33g39hh§F";
 
 			application.Run();
 		}

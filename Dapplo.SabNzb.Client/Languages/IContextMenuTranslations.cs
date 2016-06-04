@@ -28,16 +28,11 @@ using Dapplo.Config.Language;
 
 namespace Dapplo.SabNzb.Client.Languages
 {
-	[Language("Connection")]
-	public interface IConnectionTranslations : ILanguage, INotifyPropertyChanged
+	[Language("ContextMenu")]
+	public interface IContextMenuTranslations : ILanguage, INotifyPropertyChanged
 	{
-		string Cancel { get; }
-		string Connect { get; }
-		string LabelApiKey { get; }
-		string LabelPassword { get; }
-		string LabelSabNzbUri { get; }
-
-		string LabelUseHttpAuthentication { get; }
-		string LabelUsername { get; }
+		string Configure { get; }
+		string Exit { get; }
+		string ShowMain { get; }
 	}
 }

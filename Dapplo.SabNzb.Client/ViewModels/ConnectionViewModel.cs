@@ -39,9 +39,22 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		[Import]
 		public IConnectionTranslations ConnectionTranslations { get; set; }
 
+		public SabNzbClient SabNzbClient { get; private set; }
+
 		public void Connect()
 		{
-			TryClose(true);
+			if (!string.IsNullOrEmpty(ConnectionConfiguration.ApiKey) && ConnectionConfiguration.SabNzbUri != null)
+			{
+				// Connect
+				SabNzbClient = new SabNzbClient(ConnectionConfiguration.SabNzbUri, ConnectionConfiguration.ApiKey);
+				if (ConnectionConfiguration.UseHttpAuthentication)
+				{
+					SabNzbClient.SetBasicAuthentication(ConnectionConfiguration.Username, ConnectionConfiguration.Password);
+				}
+				TryClose(true);
+			}
+
+			TryClose(false);
 		}
 	}
 }

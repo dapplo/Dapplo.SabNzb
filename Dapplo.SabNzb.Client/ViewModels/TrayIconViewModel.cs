@@ -21,29 +21,36 @@
 
 #region using
 
-using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.Threading.Tasks;
+using System.Windows;
 using Caliburn.Micro;
-using Dapplo.CaliburnMicro;
-using Dapplo.SabNzb.Client.Models;
-using SabnzbdClient.Client.Entities;
+using Dapplo.CaliburnMicro.NotifyIconWpf;
+using Dapplo.LogFacade;
+using Dapplo.SabNzb.Client.Languages;
 
 #endregion
 
 namespace Dapplo.SabNzb.Client.ViewModels
 {
-	[Export(typeof(IShell))]
-	[Export]
-	public class MainScreenViewModel : Conductor<Screen>.Collection.OneActive, IShell
+	[Export(typeof(ITrayIconViewModel))]
+	public class TrayIconViewModel : Screen, ITrayIconViewModel, IHandle<string>
 	{
-		[Import]
-		public IConnectionConfiguration ConnectionConfiguration { get; set; }
+		private static readonly LogSource Log = new LogSource();
 
 		[Import]
 		private ConnectionViewModel ConnectionVm { get; set; }
 
-		public Queue SabNzbQueue { get; set; }
+		[Import]
+		private MainScreenViewModel MainScreenVm { get; set; }
+
+		[Import]
+		public IContextMenuTranslations ContextMenuTranslations { get; set; }
+
+		[Import]
+		private IEventAggregator EventAggregator { get; set; }
+
+		[Import]
+		public ITrayIconManager TrayIconManager { get; set; }
 
 		/// <summary>
 		///     Used to show a "normal" dialog
@@ -51,26 +58,35 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		[Import]
 		private IWindowManager WindowsManager { get; set; }
 
-		public async Task Configure()
+		public void Handle(string message)
 		{
-			// Test if there are settings, if not show the configuration
-			var result = WindowsManager.ShowDialog(ConnectionVm);
-			if (result == true)
-			{
-				SabNzbQueue = await ConnectionVm.SabNzbClient.GetQueueAsync();
-				OnPropertyChanged(new PropertyChangedEventArgs(nameof(SabNzbQueue)));
-			}
+			var trayIcon = TrayIconManager.GetTrayIconFor(this);
+			trayIcon.ShowBalloonTip("Event", message);
+		}
+
+		public void ShowMain()
+		{
+			WindowsManager.ShowDialog(MainScreenVm);
+		}
+
+		public void Configure()
+		{
+			Log.Debug().WriteLine("Configure");
+			WindowsManager.ShowDialog(ConnectionVm);
+		}
+
+		public void Exit()
+		{
+			Log.Debug().WriteLine("Exit");
+			Application.Current.Shutdown();
 		}
 
 		protected override void OnActivate()
 		{
 			base.OnActivate();
-			if (string.IsNullOrEmpty(ConnectionConfiguration.ApiKey) || ConnectionConfiguration.SabNzbUri == null)
-			{
-				// Just call configure
-				// ReSharper disable once UnusedVariable
-				var ignoreTask = Configure();
-			}
+			var trayIcon = TrayIconManager.GetTrayIconFor(this);
+			trayIcon.Show();
+			EventAggregator.Subscribe(this);
 		}
 	}
 }

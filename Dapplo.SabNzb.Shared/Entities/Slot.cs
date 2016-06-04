@@ -57,7 +57,7 @@ namespace SabnzbdClient.Client.Entities
 		public int DownloadTime { get; set; }
 
 		[DataMember(Name = "eta", EmitDefaultValue = false)]
-		public string ETA { get; set; }
+		public string Eta { get; set; }
 
 		[DataMember(Name = "fail_message", EmitDefaultValue = false)]
 		public string FailMessage { get; set; }
@@ -75,10 +75,10 @@ namespace SabnzbdClient.Client.Entities
 		public bool Loaded { get; set; }
 
 		[DataMember(Name = "mb", EmitDefaultValue = false)]
-		public string MB { get; set; }
+		public string Mb { get; set; }
 
 		[DataMember(Name = "mbleft", EmitDefaultValue = false)]
-		public string MBLeft { get; set; }
+		public string MbLeft { get; set; }
 
 		[DataMember(Name = "msgid", EmitDefaultValue = false)]
 		public string MsgId { get; set; }
@@ -90,7 +90,7 @@ namespace SabnzbdClient.Client.Entities
 		public string NzbName { get; set; }
 
 		[DataMember(Name = "nzo_id", EmitDefaultValue = false)]
-		public string NZOId { get; set; }
+		public string NzoId { get; set; }
 
 		[DataMember(Name = "path", EmitDefaultValue = false)]
 		public string Path { get; set; }
@@ -102,7 +102,7 @@ namespace SabnzbdClient.Client.Entities
 		public int PostprocTime { get; set; }
 
 		[DataMember(Name = "pp", EmitDefaultValue = false)]
-		public string PP { get; set; }
+		public string Pp { get; set; }
 
 		[DataMember(Name = "priority", EmitDefaultValue = false)]
 		public string Priority { get; set; }
@@ -141,10 +141,10 @@ namespace SabnzbdClient.Client.Entities
 		public string UnpackOpts { get; set; }
 
 		[DataMember(Name = "url", EmitDefaultValue = false)]
-		public string URL { get; set; }
+		public string Url { get; set; }
 
 		[DataMember(Name = "url_info", EmitDefaultValue = false)]
-		public string URLInfo { get; set; }
+		public string UrlInfo { get; set; }
 
 		[DataMember(Name = "verbosity", EmitDefaultValue = false)]
 		public string Verbosity { get; set; }
