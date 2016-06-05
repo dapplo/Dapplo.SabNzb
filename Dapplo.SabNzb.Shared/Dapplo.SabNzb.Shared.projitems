@@ -9,6 +9,10 @@
     <Import_RootNamespace>Dapplo.SabNzb</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Entities\NzbUpload.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Entities\NzbUploadResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Entities\WarningsContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Entities\ScriptsContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Entities\PostProcessing.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Entities\EndOfQueueActions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Entities\History.cs" />

@@ -122,6 +122,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\ConnectionViewModel.cs" />
     <Compile Include="ViewModels\MainScreenViewModel.cs" />
+    <Compile Include="ViewModels\SlotViewModel.cs" />
     <Compile Include="ViewModels\TrayIconViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

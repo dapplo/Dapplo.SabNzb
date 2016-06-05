@@ -23,6 +23,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions;
@@ -42,6 +44,8 @@ namespace Dapplo.SabNzb
 		/// </summary>
 		private readonly HttpBehaviour _behaviour;
 
+		private readonly string _apiKey;
+
 		private string _password;
 
 		private string _user;
@@ -58,6 +62,13 @@ namespace Dapplo.SabNzb
 			{
 				throw new ArgumentNullException(nameof(baseUri));
 			}
+
+			if (apiKey == null)
+			{
+				throw new ArgumentNullException(nameof(apiKey));
+			}
+			_apiKey = apiKey;
+
 			SabNzbApiUri = baseUri.AppendSegments("api").ExtendQuery(new Dictionary<string, string>
 			{
 				{"output", "json"},
@@ -120,6 +131,32 @@ namespace Dapplo.SabNzb
 			_behaviour.MakeCurrent();
 			var container = await categoriesUri.GetAsAsync<CategoriesContainer>(cancellationToken);
 			return container.Categories;
+		}
+
+		/// <summary>
+		///     Retrieve the scripts
+		/// </summary>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns>List with scripts</returns>
+		public async Task<IList<string>> GetScriptsAsync(CancellationToken cancellationToken = default(CancellationToken))
+		{
+			var scriptsUri = SabNzbApiUri.ExtendQuery("mode", "get_scripts");
+			_behaviour.MakeCurrent();
+			var container = await scriptsUri.GetAsAsync<ScriptsContainer>(cancellationToken);
+			return container.Scripts;
+		}
+
+		/// <summary>
+		///     Retrieve the warnings
+		/// </summary>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns>List with warnings</returns>
+		public async Task<IList<string>> GetWarningsAsync(CancellationToken cancellationToken = default(CancellationToken))
+		{
+			var warningsUri = SabNzbApiUri.ExtendQuery("mode", "warnings");
+			_behaviour.MakeCurrent();
+			var container = await warningsUri.GetAsAsync<WarningsContainer>(cancellationToken);
+			return container.Warnings;
 		}
 
 		/// <summary>
@@ -407,7 +444,7 @@ namespace Dapplo.SabNzb
 		}
 
 		/// <summary>
-		///     Add external url, pointing to a NZB file, sabnzb will download this and start downloading.s
+		///     Add external url, pointing to a NZB file, sabnzb will download this and start downloading.
 		/// </summary>
 		/// <param name="externalUri">Url to the sabnzb file</param>
 		/// <param name="category">Category</param>
@@ -437,6 +474,50 @@ namespace Dapplo.SabNzb
 			return await addUri.GetAsAsync<string>(cancellationToken);
 		}
 
+		/// <summary>
+		///     Add file, sabnzb will download this and start downloading.
+		/// </summary>
+		/// <param name="filename">Url to the sabnzb file</param>
+		/// <param name="filestream">Stream for the file content</param>
+		/// <param name="nzbName">Nice name</param>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns>NZO Id</returns>
+		public async Task<string> AddAsync(string filename, Stream filestream, string nzbName = null, CancellationToken cancellationToken = default(CancellationToken))
+		{
+			if (string.IsNullOrWhiteSpace(filename))
+			{
+				throw new ArgumentNullException(nameof(filename));
+			}
+			if (filestream == null)
+			{
+				throw new ArgumentNullException(nameof(filestream));
+			}
+
+			// Prepare upload data
+			var nzbUpload = new NzbUpload
+			{
+				NzbContent = filestream,
+				NzbFileName = filename,
+				NzbName = nzbName,
+				ApiKey = _apiKey
+			};
+			// Build Uri, this should no longer have query parameters
+			var builder = new UriBuilder(SabNzbApiUri)
+			{
+				Query = ""
+			};
+			var addUri = builder.Uri;
+			_behaviour.MakeCurrent();
+			var response = await addUri.PostAsync<NzbUploadResponse>(nzbUpload, cancellationToken);
+
+			// Check status, and if it's true get the ID
+			if (response.Status)
+			{
+				return response.NzoIds.FirstOrDefault();
+			}
+			// Throw an exception, as there is not correct status from SabNZB
+			throw new InvalidOperationException("Couldn't upload nzb file to start download.");
+		}
 		#endregion
 
 		#region History

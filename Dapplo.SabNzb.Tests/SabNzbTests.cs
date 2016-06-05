@@ -22,6 +22,7 @@
 #region using
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Dapplo.LogFacade;
 using Dapplo.SabNzb.Tests.Logger;
@@ -40,11 +41,15 @@ namespace Dapplo.SabNzb.Tests
 		{
 			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
 			var sabNzbUri = Environment.GetEnvironmentVariable("sabnzb_test_uri");
-			if (sabNzbUri != null)
+			if (string.IsNullOrEmpty(sabNzbUri))
 			{
 				throw new ArgumentNullException("sabnzb_test_uri");
 			}
 			var apiKey = Environment.GetEnvironmentVariable("sabnzb_test_apikey");
+			if (string.IsNullOrEmpty(apiKey))
+			{
+				throw new ArgumentNullException("sabnzb_test_apikey");
+			}
 			_sabNzbClient = new SabNzbClient(new Uri(sabNzbUri), apiKey);
 
 			var username = Environment.GetEnvironmentVariable("sabnzb_test_username");
@@ -52,6 +57,17 @@ namespace Dapplo.SabNzb.Tests
 			if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
 			{
 				_sabNzbClient.SetBasicAuthentication(username, password);
+			}
+		}
+
+		//[Fact]
+		public async Task TestAddFile()
+		{
+			var filename = @"path\filename.nzb";
+			using (var filestream = new FileStream(filename, FileMode.Open, FileAccess.Read))
+			{
+				var nzoId = await _sabNzbClient.AddAsync(Path.GetFileName(filename), filestream, "Nice name");
+				Assert.NotNull(nzoId);
 			}
 		}
 
