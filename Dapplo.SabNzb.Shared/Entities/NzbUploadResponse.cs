@@ -31,10 +31,10 @@ namespace SabnzbdClient.Client.Entities
 	[DataContract]
 	public class NzbUploadResponse
 	{
-		[DataMember(Name = "status", EmitDefaultValue = false)]
-		public bool Status { get; set; }
-
 		[DataMember(Name = "nzo_ids", EmitDefaultValue = false)]
 		public IList<string> NzoIds { get; set; }
+
+		[DataMember(Name = "status", EmitDefaultValue = false)]
+		public bool Status { get; set; }
 	}
 }

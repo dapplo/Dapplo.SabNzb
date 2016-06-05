@@ -38,13 +38,13 @@ namespace Dapplo.SabNzb
 {
 	public class SabNzbClient
 	{
+		private readonly string _apiKey;
+
 		/// <summary>
 		///     Store the specific HttpBehaviour, which contains a IHttpSettings and also some additional logic for making a
 		///     HttpClient which works with Jira
 		/// </summary>
 		private readonly HttpBehaviour _behaviour;
-
-		private readonly string _apiKey;
 
 		private string _password;
 
@@ -518,6 +518,7 @@ namespace Dapplo.SabNzb
 			// Throw an exception, as there is not correct status from SabNZB
 			throw new InvalidOperationException("Couldn't upload nzb file to start download.");
 		}
+
 		#endregion
 
 		#region History

@@ -41,13 +41,13 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		private ConnectionViewModel ConnectionVm { get; set; }
 
 		[Import]
-		private MainScreenViewModel MainScreenVm { get; set; }
-
-		[Import]
 		public IContextMenuTranslations ContextMenuTranslations { get; set; }
 
 		[Import]
 		private IEventAggregator EventAggregator { get; set; }
+
+		[Import]
+		private MainScreenViewModel MainScreenVm { get; set; }
 
 		[Import]
 		public ITrayIconManager TrayIconManager { get; set; }
@@ -62,11 +62,6 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		{
 			var trayIcon = TrayIconManager.GetTrayIconFor(this);
 			trayIcon.ShowBalloonTip("Event", message);
-		}
-
-		public void ShowMain()
-		{
-			WindowsManager.ShowDialog(MainScreenVm);
 		}
 
 		public void Configure()
@@ -87,6 +82,11 @@ namespace Dapplo.SabNzb.Client.ViewModels
 			var trayIcon = TrayIconManager.GetTrayIconFor(this);
 			trayIcon.Show();
 			EventAggregator.Subscribe(this);
+		}
+
+		public void ShowMain()
+		{
+			WindowsManager.ShowDialog(MainScreenVm);
 		}
 	}
 }

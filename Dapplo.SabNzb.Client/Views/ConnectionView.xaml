@@ -29,7 +29,8 @@
 
 		</StackPanel>
 		<UniformGrid>
-			<Button x:Name="Connect" Content="{Binding ConnectionTranslations.Connect}" IsDefault="True" />
+			<Button x:Name="Connect" Content="{Binding ConnectionTranslations.Connect}" IsDefault="True"
+					IsEnabled="{Binding IsConfigured}" />
 			<Button x:Name="Cancel" Content="{Binding ConnectionTranslations.Cancel}" IsCancel="True" />
 		</UniformGrid>
 	</StackPanel>
