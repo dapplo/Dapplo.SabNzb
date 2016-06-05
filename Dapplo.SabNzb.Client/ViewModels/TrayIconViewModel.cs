@@ -47,7 +47,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		private IEventAggregator EventAggregator { get; set; }
 
 		[Import]
-		private MainScreenViewModel MainScreenVm { get; set; }
+		public MainScreenViewModel MainScreenVm { get; set; }
 
 		[Import]
 		public ITrayIconManager TrayIconManager { get; set; }

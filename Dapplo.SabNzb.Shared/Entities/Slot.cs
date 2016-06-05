@@ -148,5 +148,15 @@ namespace SabnzbdClient.Client.Entities
 
 		[DataMember(Name = "verbosity", EmitDefaultValue = false)]
 		public string Verbosity { get; set; }
+
+		public override bool Equals(object other)
+		{
+			var otherSlot = other as Slot;
+			if (otherSlot == null)
+			{
+				return false;
+			}
+			return object.Equals(NzoId, otherSlot.NzoId);
+		}
 	}
 }

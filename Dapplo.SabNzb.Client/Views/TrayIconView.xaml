@@ -6,7 +6,7 @@
 			IconSource="/Resources/sabnzb.ico" ToolTipText="SabNzb Client">
 	<ni:TrayIcon.ContextMenu>
 		<ContextMenu>
-			<MenuItem Header="{Binding ContextMenuTranslations.ShowMain}" cal:Message.Attach="ShowMain" />
+			<MenuItem Header="{Binding ContextMenuTranslations.ShowMain}" cal:Message.Attach="ShowMain" IsEnabled="{Binding MainScreenVm.CanBeShown}"/>
 			<MenuItem Header="{Binding ContextMenuTranslations.Configure}" cal:Message.Attach="Configure" />
 			<Separator />
 			<MenuItem Header="{Binding ContextMenuTranslations.Exit}" cal:Message.Attach="Exit" />

@@ -21,12 +21,22 @@
 
 #region using
 
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 using Caliburn.Micro;
 using Dapplo.CaliburnMicro;
+using Dapplo.LogFacade;
 using Dapplo.SabNzb.Client.Models;
+using Dapplo.Utils;
+using GongSolutions.Wpf.DragDrop;
 using SabnzbdClient.Client.Entities;
 
 #endregion
@@ -35,15 +45,41 @@ namespace Dapplo.SabNzb.Client.ViewModels
 {
 	[Export(typeof(IShell))]
 	[Export]
-	public class MainScreenViewModel : Conductor<Screen>.Collection.OneActive, IShell
+	public class MainScreenViewModel : Conductor<Screen>.Collection.OneActive, IShell, IDropTarget
 	{
+		private static readonly LogSource Log = new LogSource();
+		private readonly AsyncLock _lock = new AsyncLock();
+		private bool _canBeShown;
+		private DispatcherTimer _timer;
+
 		[Import]
 		public IConnectionConfiguration ConnectionConfiguration { get; set; }
 
 		[Import]
 		private ConnectionViewModel ConnectionVm { get; set; }
 
+		/// <summary>
+		/// Is the view model currently on the screen?
+		/// </summary>
+		public bool CanBeShown {
+			get
+			{
+				return _canBeShown;
+			}
+			set
+			{
+				if (_canBeShown != value)
+				{
+					_canBeShown = value;
+					NotifyOfPropertyChange(nameof(CanBeShown));
+				}
+			}
+		}
+
 		public Queue SabNzbQueue { get; set; }
+
+		public ObservableCollection<Slot> QueuedSlots { get; set; } = new ObservableCollection<Slot>();
+		public ObservableCollection<Slot> HistorySlots { get; set; } = new ObservableCollection<Slot>();
 
 		/// <summary>
 		///     Used to show a "normal" dialog
@@ -51,26 +87,116 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		[Import]
 		private IWindowManager WindowsManager { get; set; }
 
-		public async Task Configure()
+		public void Configure()
 		{
 			// Test if there are settings, if not show the configuration
 			var result = WindowsManager.ShowDialog(ConnectionVm);
 			if (result == true)
 			{
-				SabNzbQueue = await ConnectionVm.SabNzbClient.GetQueueAsync();
-				OnPropertyChanged(new PropertyChangedEventArgs(nameof(SabNzbQueue)));
+				// ???
 			}
 		}
 
+		/// <summary>
+		/// Update by retrieving the information, call on UI!!
+		/// </summary>
+		private async Task UpdateAsync()
+		{
+			using (await _lock.LockAsync())
+			{
+				if (ConnectionVm.IsConfigured)
+				{
+					if (!ConnectionVm.IsConnected)
+					{
+						await ConnectionVm.Connect();
+					}
+					SabNzbQueue = await ConnectionVm.SabNzbClient.GetQueueAsync();
+					OnPropertyChanged(new PropertyChangedEventArgs(nameof(SabNzbQueue)));
+					foreach (var slot in SabNzbQueue.Slots)
+					{
+						if (!QueuedSlots.Contains(slot))
+						{
+							QueuedSlots.Add(slot);
+						}
+						else
+						{
+							var index = QueuedSlots.IndexOf(slot);
+							QueuedSlots[index] = slot;
+						}
+					}
+					// Find the slots that are no longer in the queue
+					var finishedSlots = QueuedSlots.Where(x => !SabNzbQueue.Slots.Contains(x)).ToList();
+					// TODO: Notify!?
+					foreach (var finishedSlot in finishedSlots)
+					{
+						QueuedSlots.Remove(finishedSlot);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// This is called when the ViewModel is deactivated
+		/// </summary>
+		/// <param name="close"></param>
+		protected override void OnDeactivate(bool close)
+		{
+			_timer.Stop();
+			CanBeShown = true;
+			base.OnDeactivate(close);
+		}
+
+		/// <summary>
+		/// This is called when the ViewModel is activated
+		/// </summary>
 		protected override void OnActivate()
 		{
+			_timer = new DispatcherTimer
+			{
+				Interval = TimeSpan.FromSeconds(5),
+			};
+			_timer.Tick += async (sender, eventArgs) => await UpdateAsync();
+			_timer.Start();
 			base.OnActivate();
-			if (string.IsNullOrEmpty(ConnectionConfiguration.ApiKey) || ConnectionConfiguration.SabNzbUri == null)
+			CanBeShown = false;
+			if (!ConnectionVm.IsConfigured)
 			{
 				// Just call configure
-				// ReSharper disable once UnusedVariable
-				var ignoreTask = Configure();
+				Configure();
 			}
+		}
+
+		private DragDropEffects GetEffect(IEnumerable<string> dragFileList)
+		{
+			return dragFileList.Any(item =>
+			{
+				var extension = Path.GetExtension(item);
+				return ConnectionVm.IsConnected && extension != null && extension.Equals(".nzb");
+			}) ? DragDropEffects.Copy : DragDropEffects.None;
+		}
+		void IDropTarget.DragOver(IDropInfo dropInfo)
+		{
+			var dragFileList = ((DataObject)dropInfo.Data).GetFileDropList().Cast<string>();
+			dropInfo.Effects = GetEffect(dragFileList);
+		}
+
+		void IDropTarget.Drop(IDropInfo dropInfo)
+		{
+			var dragFileList = ((DataObject)dropInfo.Data).GetFileDropList().Cast<string>().ToList();
+			dropInfo.Effects = GetEffect(dragFileList);
+
+			Task.Run(async () =>
+			{
+				foreach (var nzbFile in dragFileList.Where(x => x != null && Path.GetExtension(x).Equals(".nzb")))
+				{
+					using (var filestream = new FileStream(nzbFile, FileMode.Open, FileAccess.Read))
+					{
+						var nzoId = await ConnectionVm.SabNzbClient.AddAsync(Path.GetFileName(nzbFile), filestream);
+						Log.Info().WriteLine("Added {0}", nzoId);
+					}
+				}
+			}).Wait();
+
 		}
 	}
 }

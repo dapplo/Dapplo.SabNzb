@@ -5,6 +5,8 @@
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
 					xmlns:cal="http://www.caliburnproject.org"
+					xmlns:dragDrop="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+					Icon="/Resources/sabnzb.ico"
 					mc:Ignorable="d">
 	<controls:MetroWindow.RightWindowCommands>
 		<controls:WindowCommands>
@@ -12,10 +14,20 @@
 		</controls:WindowCommands>
 	</controls:MetroWindow.RightWindowCommands>
 
-	<StackPanel>
+	<StackPanel dragDrop:DragDrop.IsDropTarget="True" dragDrop:DragDrop.DropHandler="{Binding}">
 		<DockPanel LastChildFill="True">
 			<Label Content="Total diskspace" />
 			<TextBox x:Name="SabNzbQueue_DiskspaceTotal1" />
 		</DockPanel>
+		<ListView x:Name="QueuedSlots">
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<DockPanel LastChildFill="True">
+						<ProgressBar Minimum="0" Maximum="100" Value="{Binding Percentage}" Width="100" DockPanel.Dock="Right"/>
+						<Label Content="{Binding Filename}" DockPanel.Dock="Left"/>
+					</DockPanel>
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
 	</StackPanel>
 </controls:MetroWindow>
