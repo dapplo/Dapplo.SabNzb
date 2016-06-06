@@ -29,6 +29,7 @@ using Dapplo.CaliburnMicro;
 using Dapplo.LogFacade;
 using Dapplo.SabNzb.Client.Languages;
 using Dapplo.SabNzb.Client.Models;
+using Dapplo.HttpExtensions;
 
 #endregion
 
@@ -49,6 +50,9 @@ namespace Dapplo.SabNzb.Client.ViewModels
 
 		[Import]
 		public IConnectionTranslations ConnectionTranslations { get; set; }
+
+		[Import]
+		private INetworkConfiguration NetworkConfiguration { get; set; }
 
 		/// <summary>
 		///     Check if the configuration is correctly filled
@@ -100,6 +104,9 @@ namespace Dapplo.SabNzb.Client.ViewModels
 
 		public void OnImportsSatisfied()
 		{
+			// Make sure the settings from the configuration file are used.
+			HttpExtensionsGlobals.HttpSettings = NetworkConfiguration;
+
 			// Generate NotifyPropertyChanged when the config changes, by sending IsConfigured
 			ConnectionConfiguration.BindNotifyPropertyChanged(".*", OnPropertyChanged, nameof(IsConfigured));
 			if (IsConfigured)

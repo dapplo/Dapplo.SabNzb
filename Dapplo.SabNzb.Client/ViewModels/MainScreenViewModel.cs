@@ -97,6 +97,10 @@ namespace Dapplo.SabNzb.Client.ViewModels
 			}
 #endif
 		}
+
+		/// <summary>
+		/// Open the connection configuration
+		/// </summary>
 		public void Configure()
 		{
 			// Test if there are settings, if not show the configuration
@@ -105,6 +109,14 @@ namespace Dapplo.SabNzb.Client.ViewModels
 			{
 				// ???
 			}
+		}
+
+		/// <summary>
+		/// Pause the queue downloads
+		/// </summary>
+		public async Task Pause()
+		{
+			await ConnectionVm.SabNzbClient.PauseQueueAsync();
 		}
 
 		/// <summary>
@@ -176,6 +188,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 			}
 		}
 
+		#region Drag n Drop
 		private DragDropEffects GetEffect(IEnumerable<string> dragFileList)
 		{
 			return dragFileList.Any(item =>
@@ -206,9 +219,10 @@ namespace Dapplo.SabNzb.Client.ViewModels
 					}
 				}
 			}).Wait();
-
 		}
+		#endregion
 
+		#region Designer
 #if DEBUG
 		/// <summary>
 		/// This is only available when configuration is debug, and loads the data for the designer
@@ -247,5 +261,6 @@ namespace Dapplo.SabNzb.Client.ViewModels
 			}
 		}
 #endif
+		#endregion
 	}
 }

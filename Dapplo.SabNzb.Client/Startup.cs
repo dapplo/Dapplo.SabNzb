@@ -45,7 +45,7 @@ namespace Dapplo.SabNzb.Client
 			// Initialize a debug logger for Dapplo packages
 			LogSettings.Logger = new DebugLogger {Level = LogLevel.Verbose};
 #endif
-			var application = new Dapplication("Dapplo.CaliburnMicro.Demo", "f32dbad8-9904-473e-86e2-19275c2d06a5")
+			var application = new Dapplication("Dapplo.SabNZB", "68cb5937-90cd-4a17-9d30-d68fa9906cd6")
 			{
 				ShutdownMode = ShutdownMode.OnExplicitShutdown
 			};
