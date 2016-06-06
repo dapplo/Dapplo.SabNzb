@@ -149,6 +149,10 @@ namespace SabnzbdClient.Client.Entities
 		[DataMember(Name = "verbosity", EmitDefaultValue = false)]
 		public string Verbosity { get; set; }
 
+		public override int GetHashCode()
+		{
+			return NzoId == null ? base.GetHashCode() : NzoId.GetHashCode();
+		}
 		public override bool Equals(object other)
 		{
 			var otherSlot = other as Slot;

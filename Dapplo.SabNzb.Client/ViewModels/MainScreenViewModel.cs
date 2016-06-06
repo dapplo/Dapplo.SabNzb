@@ -87,6 +87,16 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		[Import]
 		private IWindowManager WindowsManager { get; set; }
 
+		public MainScreenViewModel()
+		{
+#if DEBUG
+			// For the designer
+			if (Execute.InDesignMode)
+			{
+				LoadDesignData();
+			}
+#endif
+		}
 		public void Configure()
 		{
 			// Test if there are settings, if not show the configuration
@@ -198,5 +208,44 @@ namespace Dapplo.SabNzb.Client.ViewModels
 			}).Wait();
 
 		}
+
+#if DEBUG
+		/// <summary>
+		/// This is only available when configuration is debug, and loads the data for the designer
+		/// </summary>
+		private void LoadDesignData()
+		{
+			SabNzbQueue = new Queue();
+			var random = new Random();
+			SabNzbQueue.DiskspaceTotal1 = $"{random.Next(0, 2400)}Mb";
+			for (int i = 0; i < 5; i++)
+			{
+				var slot = new Slot
+				{
+					NzoId = $"DesignId{i}",
+					Name = $"This is the nice NZB name for {i}",
+					NzbName = $"blub{i}.nzb",
+					Percentage = $"{random.Next(0, 100)}",
+					Filename = $"blub {i}.nzb"
+				};
+				QueuedSlots.Add(slot);
+			}
+
+			for (int i = 100; i < 105; i++)
+			{
+				var slot = new Slot
+				{
+					NzoId = $"DesignId{i}",
+					Name = $"This is the nice NZB name for {i}",
+					NzbName = $"blub{i}.nzb",
+					Size = $"{random.Next(0, 14000)} KB",
+					Status = "Completed",
+					Category = "Books",
+					Filename = $"blub {i}.nzb"
+				};
+				HistorySlots.Add(slot);
+			}
+		}
+#endif
 	}
 }

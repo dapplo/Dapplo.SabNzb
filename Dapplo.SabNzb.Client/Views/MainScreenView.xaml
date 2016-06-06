@@ -6,7 +6,10 @@
 					xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
 					xmlns:cal="http://www.caliburnproject.org"
 					xmlns:dragDrop="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+					xmlns:viewmodels="clr-namespace:Dapplo.SabNzb.Client.ViewModels"
 					Icon="/Resources/sabnzb.ico"
+					d:DataContext="{d:DesignInstance Type=viewmodels:MainScreenViewModel, IsDesignTimeCreatable=True}"
+					cal:Bind.AtDesignTime="True"
 					mc:Ignorable="d">
 	<controls:MetroWindow.RightWindowCommands>
 		<controls:WindowCommands>
@@ -17,15 +20,39 @@
 	<StackPanel dragDrop:DragDrop.IsDropTarget="True" dragDrop:DragDrop.DropHandler="{Binding}">
 		<DockPanel LastChildFill="True">
 			<Label Content="Total diskspace" />
-			<TextBox x:Name="SabNzbQueue_DiskspaceTotal1" />
+			<TextBox x:Name="SabNzbQueue_DiskspaceTotal1"/>
 		</DockPanel>
-		<ListView x:Name="QueuedSlots">
+		<ListView x:Name="QueuedSlots" HorizontalContentAlignment="Stretch">
 			<ListView.ItemTemplate>
 				<DataTemplate>
-					<DockPanel LastChildFill="True">
-						<ProgressBar Minimum="0" Maximum="100" Value="{Binding Percentage}" Width="100" DockPanel.Dock="Right"/>
-						<Label Content="{Binding Filename}" DockPanel.Dock="Left"/>
-					</DockPanel>
+					<Grid HorizontalAlignment="Stretch">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="100"/>
+						</Grid.ColumnDefinitions>
+						<Label Grid.Column="0" Content="{Binding Filename}" DockPanel.Dock="Left"/>
+						<ProgressBar Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Percentage}" DockPanel.Dock="Right" HorizontalAlignment="Stretch"/>
+						<TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Percentage}" />
+					</Grid>
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
+
+		<ListView x:Name="HistorySlots" ItemsSource="{Binding HistorySlots}" HorizontalContentAlignment="Stretch">
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<Grid HorizontalAlignment="Stretch">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="3*"/>
+							<ColumnDefinition Width="1*"/>
+							<ColumnDefinition Width="1*"/>
+							<ColumnDefinition Width="100"/>
+						</Grid.ColumnDefinitions>
+						<Label Grid.Column="0" Content="{Binding Filename}" DockPanel.Dock="Left"/>
+						<TextBlock Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding Category}" />
+						<TextBlock Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding Status}" />
+						<TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding Size}" />
+					</Grid>
 				</DataTemplate>
 			</ListView.ItemTemplate>
 		</ListView>
