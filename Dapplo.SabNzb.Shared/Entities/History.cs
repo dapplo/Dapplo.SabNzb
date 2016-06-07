@@ -31,115 +31,115 @@ namespace SabnzbdClient.Client.Entities
 	[DataContract]
 	public class History
 	{
-		[DataMember(Name = "cache_art", EmitDefaultValue = false)]
+		[DataMember(Name = "cache_art")]
 		public string CacheArt { get; set; }
 
-		[DataMember(Name = "cache_limit", EmitDefaultValue = false)]
+		[DataMember(Name = "cache_limit")]
 		public string CacheLimit { get; set; }
 
-		[DataMember(Name = "cache_size", EmitDefaultValue = false)]
+		[DataMember(Name = "cache_size")]
 		public string CacheSize { get; set; }
 
-		[DataMember(Name = "color_scheme", EmitDefaultValue = false)]
+		[DataMember(Name = "color_scheme")]
 		public string ColorScheme { get; set; }
 
-		[DataMember(Name = "darwin", EmitDefaultValue = false)]
+		[DataMember(Name = "darwin")]
 		public bool Darwin { get; set; }
 
-		[DataMember(Name = "diskspace1", EmitDefaultValue = false)]
+		[DataMember(Name = "diskspace1")]
 		public string Diskspace1 { get; set; }
 
-		[DataMember(Name = "diskspace2", EmitDefaultValue = false)]
+		[DataMember(Name = "diskspace2")]
 		public string Diskspace2 { get; set; }
 
-		[DataMember(Name = "diskspacetotal1", EmitDefaultValue = false)]
+		[DataMember(Name = "diskspacetotal1")]
 		public string DiskspaceTotal1 { get; set; }
 
-		[DataMember(Name = "diskspacetotal2", EmitDefaultValue = false)]
+		[DataMember(Name = "diskspacetotal2")]
 		public string DiskspaceTotal2 { get; set; }
 
-		[DataMember(Name = "eta", EmitDefaultValue = false)]
+		[DataMember(Name = "eta")]
 		public string Eta { get; set; }
 
-		[DataMember(Name = "finishaction", EmitDefaultValue = false)]
+		[DataMember(Name = "finishaction")]
 		public object FinishAction { get; set; }
 
-		[DataMember(Name = "have_warnings", EmitDefaultValue = false)]
+		[DataMember(Name = "have_warnings")]
 		public string HaveWarnings { get; set; }
 
-		[DataMember(Name = "helpuri", EmitDefaultValue = false)]
+		[DataMember(Name = "helpuri")]
 		public string HelpUri { get; set; }
 
-		[DataMember(Name = "kbpersec", EmitDefaultValue = false)]
+		[DataMember(Name = "kbpersec")]
 		public string KbPerSec { get; set; }
 
-		[DataMember(Name = "last_warning", EmitDefaultValue = false)]
+		[DataMember(Name = "last_warning")]
 		public string LastWarning { get; set; }
 
-		[DataMember(Name = "limit", EmitDefaultValue = false)]
+		[DataMember(Name = "limit")]
 		public int Limit { get; set; }
 
-		[DataMember(Name = "loadavg", EmitDefaultValue = false)]
+		[DataMember(Name = "loadavg")]
 		public string LoadAverage { get; set; }
 
-		[DataMember(Name = "mb", EmitDefaultValue = false)]
+		[DataMember(Name = "mb")]
 		public string Mb { get; set; }
 
-		[DataMember(Name = "mbleft", EmitDefaultValue = false)]
+		[DataMember(Name = "mbleft")]
 		public string MbLeft { get; set; }
 
-		[DataMember(Name = "month_size", EmitDefaultValue = false)]
+		[DataMember(Name = "month_size")]
 		public string MonthSize { get; set; }
 
-		[DataMember(Name = "new_release", EmitDefaultValue = false)]
+		[DataMember(Name = "new_release")]
 		public string NewRelease { get; set; }
 
-		[DataMember(Name = "new_rel_url", EmitDefaultValue = false)]
+		[DataMember(Name = "new_rel_url")]
 		public string NewRelUrl { get; set; }
 
-		[DataMember(Name = "noofslots", EmitDefaultValue = false)]
+		[DataMember(Name = "noofslots")]
 		public int NoOfSlots { get; set; }
 
-		[DataMember(Name = "nt", EmitDefaultValue = false)]
+		[DataMember(Name = "nt")]
 		public bool Nt { get; set; }
 
-		[DataMember(Name = "nzb_quota", EmitDefaultValue = false)]
+		[DataMember(Name = "nzb_quota")]
 		public string NzbQuota { get; set; }
 
-		[DataMember(Name = "paused", EmitDefaultValue = false)]
+		[DataMember(Name = "paused")]
 		public bool Paused { get; set; }
 
-		[DataMember(Name = "pause_int", EmitDefaultValue = false)]
+		[DataMember(Name = "pause_int")]
 		public string PauseInt { get; set; }
 
-		[DataMember(Name = "restart_req", EmitDefaultValue = false)]
+		[DataMember(Name = "restart_req")]
 		public bool RestartReq { get; set; }
 
-		[DataMember(Name = "slots", EmitDefaultValue = false)]
-		public List<Slot> Slots { get; set; }
+		[DataMember(Name = "slots")]
+		public IList<HistorySlot> Slots { get; set; }
 
-		[DataMember(Name = "speedlimit", EmitDefaultValue = false)]
+		[DataMember(Name = "speedlimit")]
 		public string SpeedLimit { get; set; }
 
-		[DataMember(Name = "status", EmitDefaultValue = false)]
+		[DataMember(Name = "status")]
 		public string Status { get; set; }
 
-		[DataMember(Name = "timeleft", EmitDefaultValue = false)]
+		[DataMember(Name = "timeleft")]
 		public string Timeleft { get; set; }
 
-		[DataMember(Name = "total_size", EmitDefaultValue = false)]
+		[DataMember(Name = "total_size")]
 		public string TotalSize { get; set; }
 
-		[DataMember(Name = "uptime", EmitDefaultValue = false)]
+		[DataMember(Name = "uptime")]
 		public string Uptime { get; set; }
 
-		[DataMember(Name = "version", EmitDefaultValue = false)]
+		[DataMember(Name = "version")]
 		public string Version { get; set; }
 
-		[DataMember(Name = "webdir", EmitDefaultValue = false)]
+		[DataMember(Name = "webdir")]
 		public string Webdir { get; set; }
 
-		[DataMember(Name = "week_size", EmitDefaultValue = false)]
+		[DataMember(Name = "week_size")]
 		public string WeekSize { get; set; }
 	}
 }

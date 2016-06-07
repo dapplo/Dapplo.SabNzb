@@ -272,7 +272,7 @@ namespace Dapplo.SabNzb
 
 		#endregion
 
-		#region Modify Slot
+		#region Modify QueueSlot
 
 		/// <summary>
 		///     Delete the supplied item(s) from the queue, use "all" for all
@@ -430,8 +430,8 @@ namespace Dapplo.SabNzb
 		/// </summary>
 		/// <param name="id">Id of the slot</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		/// <returns>Slot</returns>
-		public async Task<Slot> RetrieveDetailsAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
+		/// <returns>QueueSlot</returns>
+		public async Task<QueueSlot> RetrieveDetailsAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			// api?mode=get_files&output=xml&value=SABnzbd_nzo_zt2syz
 			var slotUri = SabNzbApiUri.ExtendQuery(new Dictionary<string, string>
@@ -440,7 +440,7 @@ namespace Dapplo.SabNzb
 				{"value", id}
 			});
 			_behaviour.MakeCurrent();
-			return await slotUri.GetAsAsync<Slot>(cancellationToken);
+			return await slotUri.GetAsAsync<QueueSlot>(cancellationToken);
 		}
 
 		/// <summary>

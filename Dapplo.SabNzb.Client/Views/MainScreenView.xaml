@@ -43,44 +43,60 @@
 		</controls:WindowCommands>
 	</controls:MetroWindow.RightWindowCommands>
 
-	<StackPanel dragDrop:DragDrop.IsDropTarget="True" dragDrop:DragDrop.DropHandler="{Binding}">
-		<DockPanel LastChildFill="True">
+	<Grid HorizontalAlignment="Stretch" dragDrop:DragDrop.IsDropTarget="True" dragDrop:DragDrop.DropHandler="{Binding}">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="30"/>
+			<RowDefinition Height="30"/>
+			<RowDefinition Height="5*"/>
+			<RowDefinition Height="30"/>
+			<RowDefinition Height="5*"/>
+		</Grid.RowDefinitions>
+
+		<DockPanel LastChildFill="True" Grid.Row="0">
 			<Label Content="Total diskspace" />
 			<TextBox x:Name="SabNzbQueue_DiskspaceTotal1"/>
 		</DockPanel>
-		<ListView x:Name="QueuedSlots" HorizontalContentAlignment="Stretch">
-			<ListView.ItemTemplate>
-				<DataTemplate>
-					<Grid HorizontalAlignment="Stretch">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="100"/>
-						</Grid.ColumnDefinitions>
-						<Label Grid.Column="0" Content="{Binding Filename}" DockPanel.Dock="Left"/>
-						<ProgressBar Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Percentage}" DockPanel.Dock="Right" HorizontalAlignment="Stretch"/>
-						<TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Percentage}" />
-					</Grid>
-				</DataTemplate>
-			</ListView.ItemTemplate>
-		</ListView>
+		<Label Content="Queue" HorizontalAlignment="Center" Grid.Row="1"/>
+		<ScrollViewer Grid.Row="2">
+			<ListView x:Name="QueuedSlots" HorizontalContentAlignment="Stretch">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<Grid HorizontalAlignment="Stretch">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="6*"/>
+								<ColumnDefinition Width="1*"/>
+								<ColumnDefinition Width="2*"/>
+							</Grid.ColumnDefinitions>
+							<Label Grid.Column="0" Content="{Binding Filename}" DockPanel.Dock="Left"/>
+							<TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Category}" />
+							<ProgressBar Grid.Column="2" Minimum="0" Maximum="100" Value="{Binding Percentage}" DockPanel.Dock="Right" HorizontalAlignment="Stretch"/>
+							<TextBlock Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Percentage}" />
+						</Grid>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</ScrollViewer>
 
-		<ListView x:Name="HistorySlots" ItemsSource="{Binding HistorySlots}" HorizontalContentAlignment="Stretch">
-			<ListView.ItemTemplate>
-				<DataTemplate>
-					<Grid HorizontalAlignment="Stretch">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="3*"/>
-							<ColumnDefinition Width="1*"/>
-							<ColumnDefinition Width="1*"/>
-							<ColumnDefinition Width="100"/>
-						</Grid.ColumnDefinitions>
-						<Label Grid.Column="0" Content="{Binding Name}" DockPanel.Dock="Left"/>
-						<TextBlock Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding Category}" />
-						<TextBlock Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding Status}" />
-						<TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding Size}" />
-					</Grid>
-				</DataTemplate>
-			</ListView.ItemTemplate>
-		</ListView>
-	</StackPanel>
+		<Label Content="History" HorizontalAlignment="Center"  Grid.Row="3"/>
+		<ScrollViewer Grid.Row="4">
+			<ListView x:Name="HistorySlots" HorizontalContentAlignment="Stretch">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<Grid HorizontalAlignment="Stretch">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="3*"/>
+								<ColumnDefinition Width="1*"/>
+								<ColumnDefinition Width="1*"/>
+								<ColumnDefinition Width="100"/>
+							</Grid.ColumnDefinitions>
+							<Label Grid.Column="0" Content="{Binding Name}" DockPanel.Dock="Left"/>
+							<TextBlock Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding Category}" />
+							<TextBlock Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding Status}" />
+							<TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding Size}" />
+						</Grid>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</ScrollViewer>
+	</Grid>
 </controls:MetroWindow>

@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Entities\NzbUpload.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Entities\NzbUploadResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Entities\HistorySlot.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Entities\WarningsContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Entities\ScriptsContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Entities\PostProcessing.cs" />
@@ -19,7 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Entities\Priority.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Entities\Queue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Entities\SabnzbDRoot.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Entities\Slot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Entities\QueueSlot.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Entities\CategoriesContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Entities\VersionContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Entities\StageLog.cs" />

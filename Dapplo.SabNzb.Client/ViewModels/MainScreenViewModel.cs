@@ -80,8 +80,8 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		public Queue SabNzbQueue { get; set; }
 		public History SabNzbHistory { get; set; }
 
-		public ObservableCollection<Slot> QueuedSlots { get; set; } = new ObservableCollection<Slot>();
-		public ObservableCollection<Slot> HistorySlots { get; set; } = new ObservableCollection<Slot>();
+		public ObservableCollection<QueueSlot> QueuedSlots { get; set; } = new ObservableCollection<QueueSlot>();
+		public ObservableCollection<HistorySlot> HistorySlots { get; set; } = new ObservableCollection<HistorySlot>();
 
 		/// <summary>
 		///     Used to show a "normal" dialog
@@ -280,28 +280,27 @@ namespace Dapplo.SabNzb.Client.ViewModels
 			SabNzbQueue.DiskspaceTotal1 = $"{random.Next(0, 2400)}Mb";
 			for (int i = 0; i < 5; i++)
 			{
-				var slot = new Slot
+				var slot = new QueueSlot
 				{
 					NzoId = $"DesignId{i}",
-					Name = $"This is the nice NZB name for {i}",
-					NzbName = $"blub{i}.nzb",
 					Percentage = $"{random.Next(0, 100)}",
-					Filename = $"blub {i}.nzb"
+					Filename = $"blub {i}.nzb",
+					Category = "EBook"
 				};
 				QueuedSlots.Add(slot);
 			}
 
-			for (int i = 100; i < 105; i++)
+			for (int i = 0; i < 5; i++)
 			{
-				var slot = new Slot
+				var slot = new HistorySlot
 				{
 					NzoId = $"DesignId{i}",
+
 					Name = $"This is the nice NZB name for {i}",
 					NzbName = $"blub{i}.nzb",
 					Size = $"{random.Next(0, 14000)} KB",
 					Status = "Completed",
 					Category = "Books",
-					Filename = $"blub {i}.nzb"
 				};
 				HistorySlots.Add(slot);
 			}
