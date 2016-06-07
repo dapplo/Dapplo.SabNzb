@@ -67,16 +67,16 @@
       <HintPath>..\packages\Dapplo.CaliburnMicro.NotifyIconWpf.0.1.13\lib\net452\Dapplo.CaliburnMicro.NotifyIconWpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Dapplo.Config, Version=0.3.32.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapplo.Config.0.3.32\lib\net452\Dapplo.Config.dll</HintPath>
+    <Reference Include="Dapplo.Config, Version=0.3.34.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapplo.Config.0.3.34\lib\net452\Dapplo.Config.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Dapplo.HttpExtensions, Version=0.5.15.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapplo.HttpExtensions.0.5.15\lib\net45\Dapplo.HttpExtensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Dapplo.InterfaceImpl, Version=0.1.16.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapplo.InterfaceImpl.0.1.16\lib\net452\Dapplo.InterfaceImpl.dll</HintPath>
+    <Reference Include="Dapplo.InterfaceImpl, Version=0.1.18.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapplo.InterfaceImpl.0.1.18\lib\net452\Dapplo.InterfaceImpl.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Dapplo.LogFacade, Version=0.2.45.0, Culture=neutral, processorArchitecture=MSIL">
@@ -207,6 +207,10 @@
     <Resource Include="Resources\Entypo-license.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
