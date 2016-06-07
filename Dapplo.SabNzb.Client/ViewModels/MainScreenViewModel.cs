@@ -28,6 +28,7 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -77,6 +78,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		}
 
 		public Queue SabNzbQueue { get; set; }
+		public History SabNzbHistory { get; set; }
 
 		public ObservableCollection<Slot> QueuedSlots { get; set; } = new ObservableCollection<Slot>();
 		public ObservableCollection<Slot> HistorySlots { get; set; } = new ObservableCollection<Slot>();
@@ -122,7 +124,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		/// <summary>
 		/// Update by retrieving the information, call on UI!!
 		/// </summary>
-		private async Task UpdateAsync()
+		private async Task UpdateAsync(CancellationToken token = default(CancellationToken))
 		{
 			using (await _lock.LockAsync())
 			{
@@ -132,18 +134,30 @@ namespace Dapplo.SabNzb.Client.ViewModels
 					{
 						await ConnectionVm.Connect();
 					}
-					SabNzbQueue = await ConnectionVm.SabNzbClient.GetQueueAsync();
+
+					var client = ConnectionVm.SabNzbClient;
+
+					// TODO: Extract the queue information into a VM.
+					SabNzbQueue = await client.GetQueueAsync(token);
 					OnPropertyChanged(new PropertyChangedEventArgs(nameof(SabNzbQueue)));
 					foreach (var slot in SabNzbQueue.Slots)
 					{
-						if (!QueuedSlots.Contains(slot))
+						var queueSlotIndex = QueuedSlots.IndexOf(slot);
+						if (queueSlotIndex < 0)
 						{
 							QueuedSlots.Add(slot);
 						}
 						else
 						{
-							var index = QueuedSlots.IndexOf(slot);
-							QueuedSlots[index] = slot;
+							QueuedSlots.RemoveAt(queueSlotIndex);
+							if (QueuedSlots.Count == queueSlotIndex)
+							{
+								QueuedSlots.Add(slot);
+							}
+							else
+							{
+								QueuedSlots.Insert(queueSlotIndex, slot);
+							}
 						}
 					}
 					// Find the slots that are no longer in the queue
@@ -152,6 +166,38 @@ namespace Dapplo.SabNzb.Client.ViewModels
 					foreach (var finishedSlot in finishedSlots)
 					{
 						QueuedSlots.Remove(finishedSlot);
+					}
+
+
+					// TODO: Extract the history information into a VM.
+					SabNzbHistory = await client.GetHistoryAsync(token);
+					OnPropertyChanged(new PropertyChangedEventArgs(nameof(SabNzbHistory)));
+					foreach (var slot in SabNzbHistory.Slots)
+					{
+						var historySlotIndex = HistorySlots.IndexOf(slot);
+						if (historySlotIndex < 0)
+						{
+							HistorySlots.Add(slot);
+						}
+						else
+						{
+							HistorySlots.RemoveAt(historySlotIndex);
+							if (HistorySlots.Count == historySlotIndex)
+							{
+								HistorySlots.Add(slot);
+							}
+							else
+							{
+								HistorySlots.Insert(historySlotIndex, slot);
+							}
+						}
+					}
+					// Find the slots that are no longer in the history
+					var finishedHistorySlots = HistorySlots.Where(x => !SabNzbHistory.Slots.Contains(x)).ToList();
+					// TODO: Notify!?
+					foreach (var finishedHistorySlot in finishedHistorySlots)
+					{
+						HistorySlots.Remove(finishedHistorySlot);
 					}
 				}
 			}
