@@ -30,6 +30,10 @@ using Dapplo.LogFacade;
 using Dapplo.SabNzb.Client.Languages;
 using Dapplo.SabNzb.Client.Models;
 using Dapplo.HttpExtensions;
+using Dapplo.LogFacade.Loggers;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.ComponentModel.Design;
 
 #endregion
 
@@ -54,6 +58,19 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		[Import]
 		private INetworkConfiguration NetworkConfiguration { get; set; }
 
+		public ConnectionViewModel()
+		{
+#if DEBUG
+			// For the designer
+			if (Execute.InDesignMode)
+			{
+				TraceLogger.RegisterLogger(LogLevel.Verbose);
+				Log.Info().WriteLine("Running in designer");
+				LoadDesignData();
+			}
+#endif
+		}
+
 		/// <summary>
 		///     Check if the configuration is correctly filled
 		/// </summary>
@@ -61,6 +78,10 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		{
 			get
 			{
+				if (ConnectionConfiguration == null)
+				{
+					return false;
+				}
 				if (string.IsNullOrEmpty(ConnectionConfiguration.ApiKey))
 				{
 					return false;
@@ -142,5 +163,36 @@ namespace Dapplo.SabNzb.Client.ViewModels
 			}
 			TryClose(IsConnected);
 		}
+
+		#region Designer
+		/// <summary>
+		/// Fill values for the designer
+		/// </summary>
+		private void LoadDesignData([CallerFilePath] string source = null)
+		{
+			//ConnectionTranslations = InterfaceImpl.InterceptorFactory.New<IConnectionTranslations>();
+			Log.Debug().WriteLine("Starting to fill the designer");
+			var loader = Config.Language.LanguageLoader.Current;
+			if (loader == null)
+			{
+				loader = new Config.Language.LanguageLoader("SabNzb", specifiedDirectories: new []{ Path.Combine(Path.GetDirectoryName(source), @"..\languages") });
+				loader.CorrectMissingTranslations();
+			}
+			Task.Run(async () =>
+			{
+				try
+				{
+					var result = await loader.RegisterAndGetAsync<IConnectionTranslations>();
+					await loader.ReloadAsync();
+					Log.Debug().WriteLine(string.Join(",", loader.AvailableLanguages.Values));
+					ConnectionTranslations = result;
+				} catch (Exception ex)
+				{
+					Log.Error().WriteLine(ex);
+				}
+			}).Wait();
+
+		}
+		#endregion
 	}
 }
