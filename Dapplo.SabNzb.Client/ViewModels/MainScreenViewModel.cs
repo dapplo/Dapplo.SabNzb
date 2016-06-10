@@ -168,7 +168,6 @@ namespace Dapplo.SabNzb.Client.ViewModels
 						QueuedSlots.Remove(finishedSlot);
 					}
 
-
 					// TODO: Extract the history information into a VM.
 					SabNzbHistory = await client.GetHistoryAsync(token);
 					OnPropertyChanged(new PropertyChangedEventArgs(nameof(SabNzbHistory)));
