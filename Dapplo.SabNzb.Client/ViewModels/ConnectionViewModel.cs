@@ -64,7 +64,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 			// For the designer
 			if (Execute.InDesignMode)
 			{
-				TraceLogger.RegisterLogger(LogLevel.Verbose);
+				LogSettings.RegisterDefaultLogger<TraceLogger>(LogLevels.Verbose);
 				Log.Info().WriteLine("Running in designer");
 				LoadDesignData();
 			}

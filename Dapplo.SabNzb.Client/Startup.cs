@@ -43,7 +43,7 @@ namespace Dapplo.SabNzb.Client
 		{
 #if DEBUG
 			// Initialize a debug logger for Dapplo packages
-			LogSettings.Logger = new DebugLogger {Level = LogLevel.Verbose};
+			LogSettings.RegisterDefaultLogger<DebugLogger>(LogLevels.Verbose);
 #endif
 			var application = new Dapplication("Dapplo.SabNZB", "68cb5937-90cd-4a17-9d30-d68fa9906cd6")
 			{
