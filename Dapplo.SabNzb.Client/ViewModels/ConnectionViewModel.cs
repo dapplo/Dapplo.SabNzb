@@ -175,6 +175,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 			var loader = Config.Language.LanguageLoader.Current;
 			if (loader == null)
 			{
+				// This creates a LanguageLoader which can find the language directory
 				loader = new Config.Language.LanguageLoader("SabNzb", specifiedDirectories: new []{ Path.Combine(Path.GetDirectoryName(source), @"..\languages") });
 				loader.CorrectMissingTranslations();
 			}

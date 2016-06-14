@@ -133,7 +133,7 @@ namespace SabnzbdClient.Client.Entities
 
 		public override bool Equals(object other)
 		{
-			var otherSlot = other as QueueSlot;
+			var otherSlot = other as HistorySlot;
 			if (otherSlot == null)
 			{
 				return false;
