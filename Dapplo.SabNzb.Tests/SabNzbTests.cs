@@ -28,7 +28,6 @@ using Dapplo.Log.XUnit;
 using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
-using Dapplo.Log.XUnit;
 
 #endregion
 
