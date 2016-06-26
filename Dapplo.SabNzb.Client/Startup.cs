@@ -26,8 +26,8 @@ using System.Diagnostics;
 using System.Windows;
 using Dapplo.CaliburnMicro;
 using Dapplo.Config.Converters;
-using Dapplo.LogFacade;
-using Dapplo.LogFacade.Loggers;
+using Dapplo.Log.Facade;
+using Dapplo.Log.Facade.Loggers;
 
 #endregion
 

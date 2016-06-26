@@ -34,7 +34,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Caliburn.Micro;
 using Dapplo.CaliburnMicro;
-using Dapplo.LogFacade;
+using Dapplo.Log.Facade;
 using Dapplo.SabNzb.Client.Models;
 using Dapplo.Utils;
 using GongSolutions.Wpf.DragDrop;

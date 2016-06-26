@@ -26,14 +26,15 @@ using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using Dapplo.CaliburnMicro;
-using Dapplo.LogFacade;
+using Dapplo.Log.Facade;
 using Dapplo.SabNzb.Client.Languages;
 using Dapplo.SabNzb.Client.Models;
 using Dapplo.HttpExtensions;
-using Dapplo.LogFacade.Loggers;
+using Dapplo.Log.Facade.Loggers;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.ComponentModel.Design;
+using Dapplo.Log.Loggers;
 
 #endregion
 

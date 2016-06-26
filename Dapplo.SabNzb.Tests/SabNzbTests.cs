@@ -25,7 +25,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Dapplo.Log.XUnit;
-using Dapplo.LogFacade;
+using Dapplo.Log.Facade;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -39,7 +39,7 @@ namespace Dapplo.SabNzb.Tests
 
 		public SabNzbTests(ITestOutputHelper testOutputHelper)
 		{
-			XUnitLogger.RegisterLogger(testOutputHelper, LogLevels.Verbose);
+			LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
 			var sabNzbUri = Environment.GetEnvironmentVariable("sabnzb_test_uri");
 			if (string.IsNullOrEmpty(sabNzbUri))
 			{

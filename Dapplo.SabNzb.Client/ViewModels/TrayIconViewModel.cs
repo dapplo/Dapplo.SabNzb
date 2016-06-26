@@ -25,7 +25,7 @@ using System.ComponentModel.Composition;
 using System.Windows;
 using Caliburn.Micro;
 using Dapplo.CaliburnMicro.NotifyIconWpf;
-using Dapplo.LogFacade;
+using Dapplo.Log.Facade;
 using Dapplo.SabNzb.Client.Languages;
 
 #endregion
