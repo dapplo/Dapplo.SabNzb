@@ -30,10 +30,8 @@ using Dapplo.Log.Facade;
 using Dapplo.SabNzb.Client.Languages;
 using Dapplo.SabNzb.Client.Models;
 using Dapplo.HttpExtensions;
-using Dapplo.Log.Facade.Loggers;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.ComponentModel.Design;
 using Dapplo.Log.Loggers;
 
 #endregion
