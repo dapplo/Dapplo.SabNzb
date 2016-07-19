@@ -25,7 +25,6 @@ using System;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using Caliburn.Micro;
-using Dapplo.CaliburnMicro;
 using Dapplo.Log.Facade;
 using Dapplo.SabNzb.Client.Languages;
 using Dapplo.SabNzb.Client.Models;
@@ -33,6 +32,8 @@ using Dapplo.HttpExtensions;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Dapplo.Log.Loggers;
+using Dapplo.Utils;
+using Dapplo.Utils.Extensions;
 
 #endregion
 
@@ -47,6 +48,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 	{
 		private static readonly LogSource Log = new LogSource();
 		private bool _isConnected;
+		private IDisposable _eventRegistrations;
 
 		[Import]
 		public IConnectionConfiguration ConnectionConfiguration { get; set; }
@@ -77,11 +79,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		{
 			get
 			{
-				if (ConnectionConfiguration == null)
-				{
-					return false;
-				}
-				if (string.IsNullOrEmpty(ConnectionConfiguration.ApiKey))
+				if (string.IsNullOrEmpty(ConnectionConfiguration?.ApiKey))
 				{
 					return false;
 				}
@@ -127,14 +125,36 @@ namespace Dapplo.SabNzb.Client.ViewModels
 			// Make sure the settings from the configuration file are used.
 			HttpExtensionsGlobals.HttpSettings = NetworkConfiguration;
 
-			// Generate NotifyPropertyChanged when the config changes, by sending IsConfigured
-			ConnectionConfiguration.BindNotifyPropertyChanged(".*", OnPropertyChanged, nameof(IsConfigured));
 			if (IsConfigured)
 			{
 				// Make the "connection"
 				Task.Run(async () => await Connect());
 			}
+			ConnectionConfiguration.OnPropertyChanged(propertyName =>
+			{
+				NotifyOfPropertyChange(nameof(IsConnected));
+			});
 		}
+
+		protected override void OnActivate()
+		{
+			base.OnActivate();
+
+			// Generate NotifyPropertyChanged when the config changes, by sending IsConfigured
+			var languageRegistration = ConnectionTranslations.OnPropertyChanged(propertyName => DisplayName = ConnectionTranslations.Title, nameof(IConnectionTranslations.Title));
+
+			_eventRegistrations = Disposable.Create(() =>
+			{
+				languageRegistration?.Dispose();
+			});
+		}
+
+		protected override void OnDeactivate(bool close)
+		{
+			base.OnDeactivate(close);
+			_eventRegistrations?.Dispose();
+		}
+
 
 		/// <summary>
 		///     Connect creates a SabNzbClient when the configuration is complete

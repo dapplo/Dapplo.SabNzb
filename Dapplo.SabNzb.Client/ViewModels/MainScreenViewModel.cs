@@ -34,9 +34,12 @@ using System.Windows;
 using System.Windows.Threading;
 using Caliburn.Micro;
 using Dapplo.CaliburnMicro;
+using Dapplo.Config.Language;
 using Dapplo.Log.Facade;
+using Dapplo.SabNzb.Client.Languages;
 using Dapplo.SabNzb.Client.Models;
 using Dapplo.Utils;
+using Dapplo.Utils.Events;
 using GongSolutions.Wpf.DragDrop;
 using SabnzbdClient.Client.Entities;
 
@@ -52,6 +55,10 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		private readonly AsyncLock _lock = new AsyncLock();
 		private bool _canBeShown;
 		private DispatcherTimer _timer;
+		private IDisposable _eventRegistrations;
+
+		[Import]
+		public ICoreTranslations CoreTranslations { get; set; }
 
 		[Import]
 		public IConnectionConfiguration ConnectionConfiguration { get; set; }
@@ -208,6 +215,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		/// <param name="close"></param>
 		protected override void OnDeactivate(bool close)
 		{
+			_eventRegistrations?.Dispose();
 			_timer.Stop();
 			CanBeShown = true;
 			base.OnDeactivate(close);
@@ -218,11 +226,23 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		/// </summary>
 		protected override void OnActivate()
 		{
+			var languageRegistration = CoreTranslations.OnLanguageChanged(language => { DisplayName = CoreTranslations.Title; });
+
+			// TODO: Make OnLanguageChanged execute the action?
+			DisplayName = CoreTranslations.Title;
+
 			_timer = new DispatcherTimer
 			{
 				Interval = TimeSpan.FromSeconds(5),
 			};
-			_timer.Tick += async (sender, eventArgs) => await UpdateAsync();
+			var timerRegistration = EventObservable.From<EventArgs>(_timer, nameof(DispatcherTimer.Tick)).OnEach(async (eventArgs) => await UpdateAsync());
+
+			// Cleanup event registrations
+			_eventRegistrations = Disposable.Create(() =>
+			{
+				timerRegistration?.Dispose();
+				languageRegistration?.Dispose();
+			});
 			_timer.Start();
 			base.OnActivate();
 			CanBeShown = false;

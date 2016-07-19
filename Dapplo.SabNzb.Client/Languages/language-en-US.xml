@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <language>
+	<resources prefix="core">
+		<resource name="title">SabApp</resource>
+	</resources>
 	<resources prefix="connection">
+		<resource name="title">Connection settings</resource>
 		<resource name="label_sabnzb_uri">Url to SabNZB:</resource>
 		<resource name="label_apikey">Api Key:</resource>
 		<resource name="label_usehttpauthentication">Activate HTTP-Authentication</resource>
