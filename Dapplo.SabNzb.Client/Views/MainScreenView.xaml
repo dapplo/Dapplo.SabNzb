@@ -14,24 +14,10 @@
 	<controls:MetroWindow.RightWindowCommands>
 		<controls:WindowCommands>
 			<Button ToolTip="Pause" cal:Message.Attach="[Event Click] = [Action Pause()]" >
-				<Rectangle Width="12" Height="12">
-					<Rectangle.Resources>
-						<SolidColorBrush x:Key="BlackBrush" Color="White" />
-					</Rectangle.Resources>
-					<Rectangle.Fill>
-						<VisualBrush Visual="{StaticResource appbar_control_pause}" />
-					</Rectangle.Fill>
-				</Rectangle>
+				<controls:PackIconMaterial Kind="Pause"/>
 			</Button>
 			<Button ToolTip="Configure" cal:Message.Attach="[Event Click] = [Action Configure()]">
-				<Rectangle Width="12" Height="12">
-					<Rectangle.Resources>
-						<SolidColorBrush x:Key="BlackBrush" Color="White" />
-					</Rectangle.Resources>
-					<Rectangle.Fill>
-						<VisualBrush Visual="{StaticResource appbar_settings}" />
-					</Rectangle.Fill>
-				</Rectangle>
+				<controls:PackIconModern Kind="Settings"/>
 			</Button>
 		</controls:WindowCommands>
 	</controls:MetroWindow.RightWindowCommands>

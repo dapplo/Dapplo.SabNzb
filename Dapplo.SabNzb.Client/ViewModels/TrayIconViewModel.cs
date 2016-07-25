@@ -22,8 +22,8 @@
 #region using
 
 using System.ComponentModel.Composition;
-using System.Windows;
 using Caliburn.Micro;
+using Dapplo.CaliburnMicro;
 using Dapplo.CaliburnMicro.NotifyIconWpf;
 using Dapplo.Log.Facade;
 using Dapplo.SabNzb.Client.Languages;
@@ -73,7 +73,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		public void Exit()
 		{
 			Log.Debug().WriteLine("Exit");
-			Application.Current.Shutdown();
+			Dapplication.Current.Shutdown();
 		}
 
 		protected override void OnActivate()
