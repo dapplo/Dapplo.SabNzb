@@ -5,7 +5,7 @@
     "dnxcore50.app": {}
   },
   "dependencies": {
-    "Dapplo.HttpExtensions": "0.5.26",
+    "Dapplo.HttpExtensions": "0.5.28",
     "Microsoft.NETCore": "5.0.0",
     "Microsoft.NETCore.Portable.Compatibility": "1.0.0"
   },

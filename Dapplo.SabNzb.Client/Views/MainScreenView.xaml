@@ -8,16 +8,17 @@
 					xmlns:cal="http://www.caliburnproject.org"
 					xmlns:dragDrop="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
 					xmlns:viewmodels="clr-namespace:Dapplo.SabNzb.Client.ViewModels"
+					xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
 					d:DataContext="{d:DesignInstance Type=viewmodels:MainScreenViewModel, IsDesignTimeCreatable=True}"
 					Icon="/Resources/sabnzb.ico"
 					cal:Bind.AtDesignTime="True">
 	<controls:MetroWindow.RightWindowCommands>
 		<controls:WindowCommands>
 			<Button ToolTip="Pause" cal:Message.Attach="[Event Click] = [Action Pause()]" >
-				<controls:PackIconMaterial Kind="Pause"/>
+				<iconPacks:PackIconMaterial Kind="Pause"/>
 			</Button>
 			<Button ToolTip="Configure" cal:Message.Attach="[Event Click] = [Action Configure()]">
-				<controls:PackIconModern Kind="Settings"/>
+				<iconPacks:PackIconModern Kind="Settings"/>
 			</Button>
 		</controls:WindowCommands>
 	</controls:MetroWindow.RightWindowCommands>

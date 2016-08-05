@@ -49,12 +49,8 @@ namespace Dapplo.SabNzb.Client
 			{
 				ShutdownMode = ShutdownMode.OnExplicitShutdown
 			};
-			application.Add(@".", "Dapplo.CaliburnMicro.dll");
-			// Comment this if no TrayIcons should be used
-			application.Add(@".", "Dapplo.CaliburnMicro.NotifyIconWpf.dll");
-			// Comment this to use the default window manager
-			application.Add(@".", "Dapplo.CaliburnMicro.Metro.dll");
-			application.Add(typeof(Startup).Assembly);
+			// Change this if no TrayIcons should be used
+			application.Bootstrapper.FindAndLoadAssemblies("Dapplo.CaliburnMicro*");
 
 			StringEncryptionTypeConverter.RgbIv = "0@94hFj3&E4r!k231E!";
 			StringEncryptionTypeConverter.RgbKey = "lkfwWF/63)=ßDeefkez4§Rf33g39hh§F";
