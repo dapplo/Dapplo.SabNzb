@@ -235,7 +235,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 			{
 				Interval = TimeSpan.FromSeconds(5),
 			};
-			var timerRegistration = EventObservable.From<EventArgs>(_timer, nameof(DispatcherTimer.Tick)).OnEach(async (eventArgs) => await UpdateAsync());
+			var timerRegistration = EventObservable.From<EventArgs>(_timer, nameof(DispatcherTimer.Tick)).ForEach(async (eventArgs) => await UpdateAsync());
 
 			// Cleanup event registrations
 			_eventRegistrations = Disposable.Create(() =>
