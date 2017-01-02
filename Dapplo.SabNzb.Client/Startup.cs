@@ -25,15 +25,15 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using Dapplo.CaliburnMicro;
-using Dapplo.Config.Converters;
-using Dapplo.Log.Facade;
+using Dapplo.Ini.Converters;
+using Dapplo.Log;
 using Dapplo.Log.Loggers;
 
 #endregion
 
 namespace Dapplo.SabNzb.Client
 {
-	public class Startup
+	public static class Startup
 	{
 		/// <summary>
 		///     Start the application
@@ -45,17 +45,17 @@ namespace Dapplo.SabNzb.Client
 			// Initialize a debug logger for Dapplo packages
 			LogSettings.RegisterDefaultLogger<DebugLogger>(LogLevels.Verbose);
 #endif
-			var application = new Dapplication("Dapplo.SabNZB", "68cb5937-90cd-4a17-9d30-d68fa9906cd6")
+			var dapplication = new Dapplication("Dapplo.SabNZB", "68cb5937-90cd-4a17-9d30-d68fa9906cd6")
 			{
 				ShutdownMode = ShutdownMode.OnExplicitShutdown
 			};
-			// Change this if no TrayIcons should be used
-			application.Bootstrapper.FindAndLoadAssemblies("Dapplo.CaliburnMicro*");
+			// Add some DLL's we need
+			dapplication.Bootstrapper.FindAndLoadAssemblies("Dapplo*", true);
 
 			StringEncryptionTypeConverter.RgbIv = "0@94hFj3&E4r!k231E!";
 			StringEncryptionTypeConverter.RgbKey = "lkfwWF/63)=ßDeefkez4§Rf33g39hh§F";
 
-			application.Run();
+			dapplication.Run();
 		}
 	}
 }

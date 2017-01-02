@@ -21,10 +21,7 @@
 
 #region using
 
-using System;
-using System.ComponentModel;
-using Dapplo.Config.Converters;
-using Dapplo.Config.Ini;
+using Dapplo.Ini;
 using Dapplo.HttpExtensions;
 
 #endregion

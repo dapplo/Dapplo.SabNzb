@@ -25,15 +25,17 @@ using System;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using Caliburn.Micro;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 using Dapplo.SabNzb.Client.Languages;
 using Dapplo.SabNzb.Client.Models;
 using Dapplo.HttpExtensions;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Dapplo.Log.Loggers;
-using Dapplo.Utils;
-using Dapplo.Utils.Extensions;
+using System.Reactive.Disposables;
+using Dapplo.CaliburnMicro.Configuration;
+using Dapplo.CaliburnMicro.Extensions;
+using Dapplo.Language;
 
 #endregion
 
@@ -130,7 +132,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 				// Make the "connection"
 				Task.Run(async () => await Connect());
 			}
-			ConnectionConfiguration.OnPropertyChanged(propertyName =>
+			ConnectionConfiguration.OnPropertyChanged().Subscribe(propertyChangedEventArgs =>
 			{
 				NotifyOfPropertyChange(nameof(IsConnected));
 			});
@@ -141,7 +143,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 			base.OnActivate();
 
 			// Generate NotifyPropertyChanged when the config changes, by sending IsConfigured
-			var languageRegistration = ConnectionTranslations.OnPropertyChanged(propertyName => DisplayName = ConnectionTranslations.Title, nameof(IConnectionTranslations.Title));
+			var languageRegistration = ConnectionTranslations.CreateDisplayNameBinding(this, nameof(IConnectionTranslations.Title));
 
 			_eventRegistrations = Disposable.Create(() =>
 			{
@@ -191,11 +193,11 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		{
 			//ConnectionTranslations = InterfaceImpl.InterceptorFactory.New<IConnectionTranslations>();
 			Log.Debug().WriteLine("Starting to fill the designer");
-			var loader = Config.Language.LanguageLoader.Current;
+			var loader = LanguageLoader.Current;
 			if (loader == null)
 			{
 				// This creates a LanguageLoader which can find the language directory
-				loader = new Config.Language.LanguageLoader("SabNzb", specifiedDirectories: new []{ Path.Combine(Path.GetDirectoryName(source), @"..\languages") });
+				loader = new LanguageLoader("SabNzb", specifiedDirectories: new []{ Path.Combine(Path.GetDirectoryName(source), @"..\languages") });
 				loader.CorrectMissingTranslations();
 			}
 			Task.Run(async () =>

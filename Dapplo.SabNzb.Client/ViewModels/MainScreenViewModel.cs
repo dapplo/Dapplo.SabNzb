@@ -28,20 +28,21 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
+using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 using Caliburn.Micro;
 using Dapplo.CaliburnMicro;
-using Dapplo.Config.Language;
-using Dapplo.Log.Facade;
+using Dapplo.CaliburnMicro.Extensions;
+using Dapplo.Log;
 using Dapplo.SabNzb.Client.Languages;
 using Dapplo.SabNzb.Client.Models;
-using Dapplo.Utils;
-using Dapplo.Utils.Events;
 using GongSolutions.Wpf.DragDrop;
 using SabnzbdClient.Client.Entities;
+using AsyncLock = Dapplo.Utils.AsyncLock;
 
 #endregion
 
@@ -54,7 +55,6 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		private static readonly LogSource Log = new LogSource();
 		private readonly AsyncLock _lock = new AsyncLock();
 		private bool _canBeShown;
-		private DispatcherTimer _timer;
 		private IDisposable _eventRegistrations;
 
 		[Import]
@@ -216,7 +216,6 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		protected override void OnDeactivate(bool close)
 		{
 			_eventRegistrations?.Dispose();
-			_timer.Stop();
 			CanBeShown = true;
 			base.OnDeactivate(close);
 		}
@@ -226,16 +225,15 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		/// </summary>
 		protected override void OnActivate()
 		{
-			var languageRegistration = CoreTranslations.OnLanguageChanged(language => { DisplayName = CoreTranslations.Title; });
+			var languageRegistration = CoreTranslations.CreateDisplayNameBinding(this, nameof(CoreTranslations.Title));
 
 			// TODO: Make OnLanguageChanged execute the action?
 			DisplayName = CoreTranslations.Title;
 
-			_timer = new DispatcherTimer
-			{
-				Interval = TimeSpan.FromSeconds(5),
-			};
-			var timerRegistration = EventObservable.From<EventArgs>(_timer, nameof(DispatcherTimer.Tick)).ForEach(async (eventArgs) => await UpdateAsync());
+			var timerRegistration = Observable.Timer(TimeSpan.Zero, TimeSpan.FromSeconds(10))
+				.SubscribeOn(NewThreadScheduler.Default)
+				.ObserveOn(DispatcherScheduler.Current)
+				.Subscribe(async tick => await UpdateAsync());
 
 			// Cleanup event registrations
 			_eventRegistrations = Disposable.Create(() =>
@@ -243,7 +241,6 @@ namespace Dapplo.SabNzb.Client.ViewModels
 				timerRegistration?.Dispose();
 				languageRegistration?.Dispose();
 			});
-			_timer.Start();
 			base.OnActivate();
 			CanBeShown = false;
 			if (!ConnectionVm.IsConfigured)

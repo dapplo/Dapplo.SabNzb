@@ -24,17 +24,16 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Windows;
 using System.Windows.Media;
 using Caliburn.Micro;
+using Dapplo.CaliburnMicro.Behaviors;
 using Dapplo.CaliburnMicro.Extensions;
 using Dapplo.CaliburnMicro.Menu;
 using Dapplo.CaliburnMicro.NotifyIconWpf;
 using Dapplo.CaliburnMicro.NotifyIconWpf.ViewModels;
-using Dapplo.Log.Facade;
 using Dapplo.SabNzb.Client.Languages;
-using Dapplo.Utils;
-using Dapplo.Utils.Extensions;
 using MahApps.Metro.IconPacks;
 
 #endregion
@@ -44,7 +43,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 	[Export(typeof(ITrayIconViewModel))]
 	public class SabNzbTrayIconViewModel : TrayIconViewModel, IHandle<string>
 	{
-		private readonly Disposables _disposables = new Disposables();
+		private CompositeDisposable _disposables;
 
 		[ImportMany("contextmenu", typeof(IMenuItem))]
 		private IEnumerable<IMenuItem> ContextMenuItems { get; set; }
@@ -78,13 +77,11 @@ namespace Dapplo.SabNzb.Client.ViewModels
 
 		private void CreateContectMenu()
 		{
-			var contextMenuTranslationsObservable = ContextMenuTranslations.ToObservable();
-			_disposables.Add(contextMenuTranslationsObservable);
-			var coreTranslationsObservable = CoreTranslations.ToObservable();
-			_disposables.Add(coreTranslationsObservable);
 
 			// Set the title of the icon (the ToolTipText) to our IContextMenuTranslations.Title
-			this.BindDisplayName(coreTranslationsObservable, nameof(ICoreTranslations.Title));
+			var coreTranslationsObservable = CoreTranslations.CreateDisplayNameBinding(this, nameof(ICoreTranslations.Title));
+			_disposables.Add(coreTranslationsObservable);
+
 
 			var items = ContextMenuItems.ToList();
 			items.Add(new MenuItem
@@ -98,7 +95,10 @@ namespace Dapplo.SabNzb.Client.ViewModels
 					}
 				}
 			});
-			items.Last().BindDisplayName(contextMenuTranslationsObservable, nameof(IContextMenuTranslations.ShowMain));
+			var contextMenuDisplayNameBinding = ContextMenuTranslations.CreateDisplayNameBinding(items.Last(), nameof(IContextMenuTranslations.ShowMain));
+
+			_disposables.Add(contextMenuDisplayNameBinding);
+
 
 			items.Add(new MenuItem
 			{
@@ -111,11 +111,11 @@ namespace Dapplo.SabNzb.Client.ViewModels
 					}
 				}
 			});
-			items.Last().BindDisplayName(contextMenuTranslationsObservable, nameof(IContextMenuTranslations.Configure));
+			contextMenuDisplayNameBinding.AddDisplayNameBinding(items.Last(),nameof(IContextMenuTranslations.Configure));
 
 			items.Add(new MenuItem
 			{
-				IsSeparator = true,
+				Style = MenuItemStyles.Separator,
 				Id = "Y_Separator"
 			});
 
@@ -124,7 +124,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 				Id = "Z_Exit",
 				ClickAction = menuItem => Application.Current.Shutdown()
 			});
-			items.Last().BindDisplayName(contextMenuTranslationsObservable, nameof(IContextMenuTranslations.Exit));
+			contextMenuDisplayNameBinding.AddDisplayNameBinding(items.Last(), nameof(IContextMenuTranslations.Exit));
 
 			ConfigureMenuItems(items);
 
@@ -134,16 +134,21 @@ namespace Dapplo.SabNzb.Client.ViewModels
 
 		protected override void OnActivate()
 		{
+			_disposables?.Dispose();
+			_disposables = new CompositeDisposable();
 			base.OnActivate();
 
 			CreateContectMenu();
 
-			SetIcon(new PackIconMaterial
+			// Use Behavior to set the icon
+			var taskbarIcon = TrayIcon as FrameworkElement;
+			taskbarIcon?.SetCurrentValue(FrameworkElementIcon.ValueProperty, new PackIconMaterial
 			{
 				Kind = PackIconMaterialKind.Flash,
 				Background = Brushes.White,
-				Foreground = Brushes.Black,
+				Foreground = Brushes.Black
 			});
+
 			Show();
 			EventAggregator.Subscribe(this);
 		}
