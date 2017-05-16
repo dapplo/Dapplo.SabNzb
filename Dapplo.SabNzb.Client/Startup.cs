@@ -24,7 +24,7 @@
 using System;
 using System.Diagnostics;
 using System.Windows;
-using Dapplo.CaliburnMicro;
+using Dapplo.CaliburnMicro.Dapp;
 using Dapplo.Ini.Converters;
 using Dapplo.Log;
 using Dapplo.Log.Loggers;

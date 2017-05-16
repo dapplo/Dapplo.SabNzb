@@ -133,7 +133,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		/// </summary>
 		private async Task UpdateAsync(CancellationToken token = default(CancellationToken))
 		{
-			using (await _lock.LockAsync())
+			using (await _lock.LockAsync(token))
 			{
 				if (ConnectionVm.IsConfigured)
 				{

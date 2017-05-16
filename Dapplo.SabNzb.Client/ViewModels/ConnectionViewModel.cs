@@ -33,7 +33,6 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using Dapplo.Log.Loggers;
 using System.Reactive.Disposables;
-using Dapplo.CaliburnMicro.Configuration;
 using Dapplo.CaliburnMicro.Extensions;
 using Dapplo.Language;
 
@@ -41,180 +40,181 @@ using Dapplo.Language;
 
 namespace Dapplo.SabNzb.Client.ViewModels
 {
-	/// <summary>
-	///     This ViewModel is both the holder of the SabNzbClient and
-	///     the dialog to change the settings.
-	/// </summary>
-	[Export]
-	public class ConnectionViewModel : Screen, IPartImportsSatisfiedNotification
-	{
-		private static readonly LogSource Log = new LogSource();
-		private bool _isConnected;
-		private IDisposable _eventRegistrations;
+    /// <summary>
+    ///     This ViewModel is both the holder of the SabNzbClient and
+    ///     the dialog to change the settings.
+    /// </summary>
+    [Export]
+    public class ConnectionViewModel : Screen, IPartImportsSatisfiedNotification
+    {
+        private static readonly LogSource Log = new LogSource();
+        private bool _isConnected;
+        private IDisposable _eventRegistrations;
 
-		[Import]
-		public IConnectionConfiguration ConnectionConfiguration { get; set; }
+        [Import]
+        public IConnectionConfiguration ConnectionConfiguration { get; set; }
 
-		[Import]
-		public IConnectionTranslations ConnectionTranslations { get; set; }
+        [Import]
+        public IConnectionTranslations ConnectionTranslations { get; set; }
 
-		[Import]
-		private INetworkConfiguration NetworkConfiguration { get; set; }
+        [Import]
+        private INetworkConfiguration NetworkConfiguration { get; set; }
 
-		public ConnectionViewModel()
-		{
+        public ConnectionViewModel()
+        {
 #if DEBUG
-			// For the designer
-			if (Execute.InDesignMode)
-			{
-				LogSettings.RegisterDefaultLogger<TraceLogger>(LogLevels.Verbose);
-				Log.Info().WriteLine("Running in designer");
-				LoadDesignData();
-			}
+            // For the designer
+            if (Execute.InDesignMode)
+            {
+                LogSettings.RegisterDefaultLogger<TraceLogger>(LogLevels.Verbose);
+                Log.Info().WriteLine("Running in designer");
+                LoadDesignData();
+            }
 #endif
-		}
+        }
 
-		/// <summary>
-		///     Check if the configuration is correctly filled
-		/// </summary>
-		public bool IsConfigured
-		{
-			get
-			{
-				if (string.IsNullOrEmpty(ConnectionConfiguration?.ApiKey))
-				{
-					return false;
-				}
-				if (ConnectionConfiguration.SabNzbUri == null || !ConnectionConfiguration.SabNzbUri.IsAbsoluteUri || !ConnectionConfiguration.SabNzbUri.IsWellFormedOriginalString())
-				{
-					return false;
-				}
-				if (ConnectionConfiguration.UseHttpAuthentication)
-				{
-					if (string.IsNullOrEmpty(ConnectionConfiguration.Username))
-					{
-						return false;
-					}
-					if (string.IsNullOrEmpty(ConnectionConfiguration.Password))
-					{
-						return false;
-					}
-				}
-				return true;
-			}
-		}
+        /// <summary>
+        ///     Check if the configuration is correctly filled
+        /// </summary>
+        public bool IsConfigured
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(ConnectionConfiguration?.ApiKey))
+                {
+                    return false;
+                }
+                if (ConnectionConfiguration.SabNzbUri == null || !ConnectionConfiguration.SabNzbUri.IsAbsoluteUri || !ConnectionConfiguration.SabNzbUri.IsWellFormedOriginalString())
+                {
+                    return false;
+                }
+                if (ConnectionConfiguration.UseHttpAuthentication)
+                {
+                    if (string.IsNullOrEmpty(ConnectionConfiguration.Username))
+                    {
+                        return false;
+                    }
+                    if (string.IsNullOrEmpty(ConnectionConfiguration.Password))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
 
-		/// <summary>
-		///     Value representing if there is a "connection" (if it is possible to use the api)
-		/// </summary>
-		public bool IsConnected
-		{
-			get { return _isConnected; }
-			set
-			{
-				if (_isConnected != value)
-				{
-					_isConnected = value;
-					NotifyOfPropertyChange(nameof(IsConnected));
-				}
-			}
-		}
+        /// <summary>
+        ///     Value representing if there is a "connection" (if it is possible to use the api)
+        /// </summary>
+        public bool IsConnected
+        {
+            get { return _isConnected; }
+            set
+            {
+                if (_isConnected != value)
+                {
+                    _isConnected = value;
+                    NotifyOfPropertyChange(nameof(IsConnected));
+                }
+            }
+        }
 
-		public SabNzbClient SabNzbClient { get; private set; }
+        public SabNzbClient SabNzbClient { get; private set; }
 
-		public void OnImportsSatisfied()
-		{
-			// Make sure the settings from the configuration file are used.
-			HttpExtensionsGlobals.HttpSettings = NetworkConfiguration;
+        public void OnImportsSatisfied()
+        {
+            // Make sure the settings from the configuration file are used.
+            HttpExtensionsGlobals.HttpSettings = NetworkConfiguration;
 
-			if (IsConfigured)
-			{
-				// Make the "connection"
-				Task.Run(async () => await Connect());
-			}
-			ConnectionConfiguration.OnPropertyChanged().Subscribe(propertyChangedEventArgs =>
-			{
-				NotifyOfPropertyChange(nameof(IsConnected));
-			});
-		}
+            if (IsConfigured)
+            {
+                // Make the "connection"
+                Task.Run(async () => await Connect());
+            }
+            ConnectionConfiguration.OnPropertyChanged().Subscribe(propertyChangedEventArgs =>
+            {
+                NotifyOfPropertyChange(nameof(IsConnected));
+            });
+        }
 
-		protected override void OnActivate()
-		{
-			base.OnActivate();
+        protected override void OnActivate()
+        {
+            base.OnActivate();
 
-			// Generate NotifyPropertyChanged when the config changes, by sending IsConfigured
-			var languageRegistration = ConnectionTranslations.CreateDisplayNameBinding(this, nameof(IConnectionTranslations.Title));
+            // Generate NotifyPropertyChanged when the config changes, by sending IsConfigured
+            var languageRegistration = ConnectionTranslations.CreateDisplayNameBinding(this, nameof(IConnectionTranslations.Title));
 
-			_eventRegistrations = Disposable.Create(() =>
-			{
-				languageRegistration?.Dispose();
-			});
-		}
+            _eventRegistrations = Disposable.Create(() =>
+            {
+                languageRegistration?.Dispose();
+            });
+        }
 
-		protected override void OnDeactivate(bool close)
-		{
-			base.OnDeactivate(close);
-			_eventRegistrations?.Dispose();
-		}
+        protected override void OnDeactivate(bool close)
+        {
+            base.OnDeactivate(close);
+            _eventRegistrations?.Dispose();
+        }
 
 
-		/// <summary>
-		///     Connect creates a SabNzbClient when the configuration is complete
-		/// </summary>
-		public async Task Connect()
-		{
-			if (IsConfigured)
-			{
-				// Connect
-				SabNzbClient = new SabNzbClient(ConnectionConfiguration.SabNzbUri, ConnectionConfiguration.ApiKey);
-				if (ConnectionConfiguration.UseHttpAuthentication)
-				{
-					SabNzbClient.SetBasicAuthentication(ConnectionConfiguration.Username, ConnectionConfiguration.Password);
-				}
-				try
-				{
-					await SabNzbClient.GetVersionAsync();
-					IsConnected = true;
-				}
-				catch (Exception ex)
-				{
-					Log.Error().WriteLine(ex, "Unable to connect to {0}", ConnectionConfiguration.SabNzbUri.AbsoluteUri);
-					IsConnected = false;
-				}
-			}
-			TryClose(IsConnected);
-		}
+        /// <summary>
+        ///     Connect creates a SabNzbClient when the configuration is complete
+        /// </summary>
+        public async Task Connect()
+        {
+            if (IsConfigured)
+            {
+                // Connect
+                SabNzbClient = new SabNzbClient(ConnectionConfiguration.SabNzbUri, ConnectionConfiguration.ApiKey);
+                if (ConnectionConfiguration.UseHttpAuthentication)
+                {
+                    SabNzbClient.SetBasicAuthentication(ConnectionConfiguration.Username, ConnectionConfiguration.Password);
+                }
+                try
+                {
+                    await SabNzbClient.GetVersionAsync();
+                    IsConnected = true;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error().WriteLine(ex, "Unable to connect to {0}", ConnectionConfiguration.SabNzbUri.AbsoluteUri);
+                    IsConnected = false;
+                }
+            }
+            TryClose(IsConnected);
+        }
 
-		#region Designer
-		/// <summary>
-		/// Fill values for the designer
-		/// </summary>
-		private void LoadDesignData([CallerFilePath] string source = null)
-		{
-			//ConnectionTranslations = InterfaceImpl.InterceptorFactory.New<IConnectionTranslations>();
-			Log.Debug().WriteLine("Starting to fill the designer");
-			var loader = LanguageLoader.Current;
-			if (loader == null)
-			{
-				// This creates a LanguageLoader which can find the language directory
-				loader = new LanguageLoader("SabNzb", specifiedDirectories: new []{ Path.Combine(Path.GetDirectoryName(source), @"..\languages") });
-				loader.CorrectMissingTranslations();
-			}
-			Task.Run(async () =>
-			{
-				try
-				{
-					var result = await loader.RegisterAndGetAsync<IConnectionTranslations>();
-					await loader.ReloadAsync();
-					Log.Debug().WriteLine(string.Join(",", loader.AvailableLanguages.Values));
-					ConnectionTranslations = result;
-				} catch (Exception ex)
-				{
-					Log.Error().WriteLine(ex);
-				}
-			}).Wait();
+        #region Designer
+#if DEBUG
+        /// <summary>
+        /// Fill values for the designer
+        /// </summary>
+        private void LoadDesignData([CallerFilePath] string source = null)
+        {
+            Log.Debug().WriteLine("Starting to fill the designer");
+            var loader = LanguageLoader.Current;
+            if (loader == null)
+            {
+                // This creates a LanguageLoader which can find the language directory
+                loader = new LanguageLoader("SabNzb", specifiedDirectories: new []{ Path.Combine(Path.GetDirectoryName(source), @"..\languages") });
+                loader.CorrectMissingTranslations();
+            }
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var result = await loader.RegisterAndGetAsync<IConnectionTranslations>();
+                    await loader.ReloadAsync();
+                    Log.Debug().WriteLine(string.Join(",", loader.AvailableLanguages.Values));
+                    ConnectionTranslations = result;
+                } catch (Exception ex)
+                {
+                    Log.Error().WriteLine(ex);
+                }
+            }).Wait();
 
-		}
-		#endregion
-	}
+        }
+#endif
+        #endregion
+    }
 }
