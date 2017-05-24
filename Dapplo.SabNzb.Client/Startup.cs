@@ -49,8 +49,6 @@ namespace Dapplo.SabNzb.Client
 			{
 				ShutdownMode = ShutdownMode.OnExplicitShutdown
 			};
-			// Add some DLL's we need
-			dapplication.Bootstrapper.FindAndLoadAssemblies("Dapplo*", true);
 
 			StringEncryptionTypeConverter.RgbIv = "0@94hFj3&E4r!k231E!";
 			StringEncryptionTypeConverter.RgbKey = "lkfwWF/63)=ßDeefkez4§Rf33g39hh§F";

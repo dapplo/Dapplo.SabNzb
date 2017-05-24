@@ -40,123 +40,123 @@ using MahApps.Metro.IconPacks;
 
 namespace Dapplo.SabNzb.Client.ViewModels
 {
-	[Export(typeof(ITrayIconViewModel))]
-	public class SabNzbTrayIconViewModel : TrayIconViewModel, IHandle<string>
-	{
-		private CompositeDisposable _disposables;
+    [Export(typeof(ITrayIconViewModel))]
+    public class SabNzbTrayIconViewModel : TrayIconViewModel, IHandle<string>
+    {
+        private CompositeDisposable _disposables;
 
-		[ImportMany("contextmenu", typeof(IMenuItem))]
-		private IEnumerable<IMenuItem> ContextMenuItems { get; set; }
+        [ImportMany("contextmenu", typeof(IMenuItem))]
+        private IEnumerable<IMenuItem> ContextMenuItems { get; set; }
 
-		[Import]
-		private ConnectionViewModel ConnectionVm { get; set; }
+        [Import]
+        private ConnectionViewModel ConnectionVm { get; set; }
 
-		[Import]
-		public IContextMenuTranslations ContextMenuTranslations { get; set; }
+        [Import]
+        public IContextMenuTranslations ContextMenuTranslations { get; set; }
 
-		[Import]
-		public ICoreTranslations CoreTranslations { get; set; }
+        [Import]
+        public ICoreTranslations CoreTranslations { get; set; }
 
-		[Import]
-		private IEventAggregator EventAggregator { get; set; }
+        [Import]
+        private IEventAggregator EventAggregator { get; set; }
 
-		[Import]
-		public MainScreenViewModel MainScreenVm { get; set; }
+        [Import]
+        public MainScreenViewModel MainScreenVm { get; set; }
 
-		/// <summary>
-		///     Used to show a "normal" dialog
-		/// </summary>
-		[Import]
-		private IWindowManager WindowsManager { get; set; }
+        /// <summary>
+        ///     Used to show a "normal" dialog
+        /// </summary>
+        [Import]
+        private IWindowManager WindowsManager { get; set; }
 
-		public void Handle(string message)
-		{
-			var trayIcon = TrayIconManager.GetTrayIconFor(this);
-			trayIcon.ShowBalloonTip("Event", message);
-		}
+        public void Handle(string message)
+        {
+            var trayIcon = TrayIconManager.GetTrayIconFor(this);
+            trayIcon.ShowBalloonTip("Event", message);
+        }
 
-		private void CreateContectMenu()
-		{
+        private void CreateContectMenu()
+        {
 
-			// Set the title of the icon (the ToolTipText) to our IContextMenuTranslations.Title
-			var coreTranslationsObservable = CoreTranslations.CreateDisplayNameBinding(this, nameof(ICoreTranslations.Title));
-			_disposables.Add(coreTranslationsObservable);
-
-
-			var items = ContextMenuItems.ToList();
-			items.Add(new MenuItem
-			{
-				Id = "V_Main",
-				ClickAction = menuItem =>
-				{
-					if (!MainScreenVm.IsActive)
-					{
-						WindowsManager.ShowDialog(MainScreenVm);
-					}
-				}
-			});
-			var contextMenuDisplayNameBinding = ContextMenuTranslations.CreateDisplayNameBinding(items.Last(), nameof(IContextMenuTranslations.ShowMain));
-
-			_disposables.Add(contextMenuDisplayNameBinding);
+            // Set the title of the icon (the ToolTipText) to our IContextMenuTranslations.Title
+            var coreTranslationsObservable = CoreTranslations.CreateDisplayNameBinding(this, nameof(ICoreTranslations.Title));
+            _disposables.Add(coreTranslationsObservable);
 
 
-			items.Add(new MenuItem
-			{
-				Id = "X_Configure",
-				ClickAction = menuItem =>
-				{
-					if (!ConnectionVm.IsActive)
-					{
-						WindowsManager.ShowDialog(ConnectionVm);
-					}
-				}
-			});
-			contextMenuDisplayNameBinding.AddDisplayNameBinding(items.Last(),nameof(IContextMenuTranslations.Configure));
+            var items = ContextMenuItems.ToList();
+            items.Add(new ClickableMenuItem
+            {
+                Id = "V_Main",
+                ClickAction = menuItem =>
+                {
+                    if (!MainScreenVm.IsActive)
+                    {
+                        WindowsManager.ShowDialog(MainScreenVm);
+                    }
+                }
+            });
+            var contextMenuDisplayNameBinding = ContextMenuTranslations.CreateDisplayNameBinding(items.Last(), nameof(IContextMenuTranslations.ShowMain));
 
-			items.Add(new MenuItem
-			{
-				Style = MenuItemStyles.Separator,
-				Id = "Y_Separator"
-			});
+            _disposables.Add(contextMenuDisplayNameBinding);
 
-			items.Add(new MenuItem
-			{
-				Id = "Z_Exit",
-				ClickAction = menuItem => Application.Current.Shutdown()
-			});
-			contextMenuDisplayNameBinding.AddDisplayNameBinding(items.Last(), nameof(IContextMenuTranslations.Exit));
 
-			ConfigureMenuItems(items);
+            items.Add(new ClickableMenuItem
+            {
+                Id = "X_Configure",
+                ClickAction = menuItem =>
+                {
+                    if (!ConnectionVm.IsActive)
+                    {
+                        WindowsManager.ShowDialog(ConnectionVm);
+                    }
+                }
+            });
+            contextMenuDisplayNameBinding.AddDisplayNameBinding(items.Last(),nameof(IContextMenuTranslations.Configure));
 
-			// Make sure the margin is set, do this AFTER the icon are set
-			items.ApplyIconMargin(new Thickness(2));
-		}
+            items.Add(new MenuItem
+            {
+                Style = MenuItemStyles.Separator,
+                Id = "Y_Separator"
+            });
 
-		protected override void OnActivate()
-		{
-			_disposables?.Dispose();
-			_disposables = new CompositeDisposable();
-			base.OnActivate();
+            items.Add(new ClickableMenuItem
+            {
+                Id = "Z_Exit",
+                ClickAction = menuItem => Application.Current.Shutdown()
+            });
+            contextMenuDisplayNameBinding.AddDisplayNameBinding(items.Last(), nameof(IContextMenuTranslations.Exit));
 
-			CreateContectMenu();
+            ConfigureMenuItems(items);
 
-			// Use Behavior to set the icon
-			var taskbarIcon = TrayIcon as FrameworkElement;
-			taskbarIcon?.SetCurrentValue(FrameworkElementIcon.ValueProperty, new PackIconMaterial
-			{
-				Kind = PackIconMaterialKind.Flash,
-				Background = Brushes.White,
-				Foreground = Brushes.Black
-			});
+            // Make sure the margin is set, do this AFTER the icon are set
+            items.ApplyIconMargin(new Thickness(2));
+        }
 
-			Show();
-			EventAggregator.Subscribe(this);
-		}
+        protected override void OnActivate()
+        {
+            _disposables?.Dispose();
+            _disposables = new CompositeDisposable();
+            base.OnActivate();
 
-		protected override void OnDeactivate(bool close)
-		{
-			base.OnDeactivate(close);
-			_disposables.Dispose();
-		}
-	}
+            CreateContectMenu();
+
+            // Use Behavior to set the icon
+            var taskbarIcon = TrayIcon as FrameworkElement;
+            taskbarIcon?.SetCurrentValue(FrameworkElementIcon.ValueProperty, new PackIconMaterial
+            {
+                Kind = PackIconMaterialKind.Flash,
+                Background = Brushes.White,
+                Foreground = Brushes.Black
+            });
+
+            Show();
+            EventAggregator.Subscribe(this);
+        }
+
+        protected override void OnDeactivate(bool close)
+        {
+            base.OnDeactivate(close);
+            _disposables.Dispose();
+        }
+    }
 }
