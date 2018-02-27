@@ -135,76 +135,83 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		{
 			using (await _lock.LockAsync(token))
 			{
-				if (ConnectionVm.IsConfigured)
+				if (!ConnectionVm.IsConfigured)
 				{
-					if (!ConnectionVm.IsConnected)
+					return;
+				}
+
+				if (!ConnectionVm.IsConnected)
+				{
+					await ConnectionVm.Connect();
+				}
+
+				var client = ConnectionVm.SabNzbClient;
+
+				// TODO: Extract the queue information into a VM.
+				SabNzbQueue = await client.GetQueueAsync(token);
+				if (SabNzbQueue == null)
+				{
+					// No queue
+					return;
+				}
+				OnPropertyChanged(new PropertyChangedEventArgs(nameof(SabNzbQueue)));
+				foreach (var slot in SabNzbQueue.Slots)
+				{
+					var queueSlotIndex = QueuedSlots.IndexOf(slot);
+					if (queueSlotIndex < 0)
 					{
-						await ConnectionVm.Connect();
+						QueuedSlots.Add(slot);
 					}
-
-					var client = ConnectionVm.SabNzbClient;
-
-					// TODO: Extract the queue information into a VM.
-					SabNzbQueue = await client.GetQueueAsync(token);
-					OnPropertyChanged(new PropertyChangedEventArgs(nameof(SabNzbQueue)));
-					foreach (var slot in SabNzbQueue.Slots)
+					else
 					{
-						var queueSlotIndex = QueuedSlots.IndexOf(slot);
-						if (queueSlotIndex < 0)
+						QueuedSlots.RemoveAt(queueSlotIndex);
+						if (QueuedSlots.Count == queueSlotIndex)
 						{
 							QueuedSlots.Add(slot);
 						}
 						else
 						{
-							QueuedSlots.RemoveAt(queueSlotIndex);
-							if (QueuedSlots.Count == queueSlotIndex)
-							{
-								QueuedSlots.Add(slot);
-							}
-							else
-							{
-								QueuedSlots.Insert(queueSlotIndex, slot);
-							}
+							QueuedSlots.Insert(queueSlotIndex, slot);
 						}
 					}
-					// Find the slots that are no longer in the queue
-					var finishedSlots = QueuedSlots.Where(x => !SabNzbQueue.Slots.Contains(x)).ToList();
-					// TODO: Notify!?
-					foreach (var finishedSlot in finishedSlots)
-					{
-						QueuedSlots.Remove(finishedSlot);
-					}
+				}
+				// Find the slots that are no longer in the queue
+				var finishedSlots = QueuedSlots.Where(x => !SabNzbQueue.Slots.Contains(x)).ToList();
+				// TODO: Notify!?
+				foreach (var finishedSlot in finishedSlots)
+				{
+					QueuedSlots.Remove(finishedSlot);
+				}
 
-					// TODO: Extract the history information into a VM.
-					SabNzbHistory = await client.GetHistoryAsync(token);
-					OnPropertyChanged(new PropertyChangedEventArgs(nameof(SabNzbHistory)));
-					foreach (var slot in SabNzbHistory.Slots)
+				// TODO: Extract the history information into a VM.
+				SabNzbHistory = await client.GetHistoryAsync(token);
+				OnPropertyChanged(new PropertyChangedEventArgs(nameof(SabNzbHistory)));
+				foreach (var slot in SabNzbHistory.Slots)
+				{
+					var historySlotIndex = HistorySlots.IndexOf(slot);
+					if (historySlotIndex < 0)
 					{
-						var historySlotIndex = HistorySlots.IndexOf(slot);
-						if (historySlotIndex < 0)
+						HistorySlots.Add(slot);
+					}
+					else
+					{
+						HistorySlots.RemoveAt(historySlotIndex);
+						if (HistorySlots.Count == historySlotIndex)
 						{
 							HistorySlots.Add(slot);
 						}
 						else
 						{
-							HistorySlots.RemoveAt(historySlotIndex);
-							if (HistorySlots.Count == historySlotIndex)
-							{
-								HistorySlots.Add(slot);
-							}
-							else
-							{
-								HistorySlots.Insert(historySlotIndex, slot);
-							}
+							HistorySlots.Insert(historySlotIndex, slot);
 						}
 					}
-					// Find the slots that are no longer in the history
-					var finishedHistorySlots = HistorySlots.Where(x => !SabNzbHistory.Slots.Contains(x)).ToList();
-					// TODO: Notify!?
-					foreach (var finishedHistorySlot in finishedHistorySlots)
-					{
-						HistorySlots.Remove(finishedHistorySlot);
-					}
+				}
+				// Find the slots that are no longer in the history
+				var finishedHistorySlots = HistorySlots.Where(x => !SabNzbHistory.Slots.Contains(x)).ToList();
+				// TODO: Notify!?
+				foreach (var finishedHistorySlot in finishedHistorySlots)
+				{
+					HistorySlots.Remove(finishedHistorySlot);
 				}
 			}
 		}

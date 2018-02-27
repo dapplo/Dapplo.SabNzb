@@ -25,7 +25,7 @@ using System.Runtime.Serialization;
 
 #endregion
 
-namespace SabnzbdClient.Client.Entities
+namespace Dapplo.SabNzb.Entities
 {
 	[DataContract]
 	public class VersionContainer

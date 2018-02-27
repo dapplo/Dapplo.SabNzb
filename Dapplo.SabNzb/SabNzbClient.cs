@@ -28,6 +28,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions;
+using Dapplo.HttpExtensions.JsonSimple;
 using Dapplo.SabNzb.Entities;
 using Dapplo.Utils.Extensions;
 using SabnzbdClient.Client.Entities;
@@ -63,11 +64,7 @@ namespace Dapplo.SabNzb
 				throw new ArgumentNullException(nameof(baseUri));
 			}
 
-			if (apiKey == null)
-			{
-				throw new ArgumentNullException(nameof(apiKey));
-			}
-			_apiKey = apiKey;
+			_apiKey = apiKey ?? throw new ArgumentNullException(nameof(apiKey));
 
 			SabNzbApiUri = baseUri.AppendSegments("api").ExtendQuery(new Dictionary<string, string>
 			{
@@ -78,6 +75,7 @@ namespace Dapplo.SabNzb
 			_behaviour = new HttpBehaviour
 			{
 				HttpSettings = httpSettings ?? HttpExtensionsGlobals.HttpSettings,
+				JsonSerializer = new SimpleJsonSerializer(),
 				OnHttpRequestMessageCreated = httpMessage =>
 				{
 					if (!string.IsNullOrEmpty(_user) && _password != null)
@@ -117,7 +115,7 @@ namespace Dapplo.SabNzb
 			var versionUri = SabNzbApiUri.ExtendQuery("mode", "version");
 			_behaviour.MakeCurrent();
 			var container = await versionUri.GetAsAsync<VersionContainer>(cancellationToken);
-			return container.Version;
+			return container?.Version;
 		}
 
 		/// <summary>
@@ -195,7 +193,7 @@ namespace Dapplo.SabNzb
 			var queueUri = SabNzbApiUri.ExtendQuery("mode", "queue");
 			_behaviour.MakeCurrent();
 			var root = await queueUri.GetAsAsync<SabnzbDRoot>(cancellationToken);
-			return root.QueueDetails;
+			return root?.QueueDetails;
 		}
 
 		/// <summary>
