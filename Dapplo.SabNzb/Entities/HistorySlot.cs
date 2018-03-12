@@ -1,5 +1,5 @@
 //  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2018 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -26,7 +26,7 @@ using System.Runtime.Serialization;
 
 #endregion
 
-namespace SabnzbdClient.Client.Entities
+namespace Dapplo.SabNzb.Entities
 {
 	[DataContract]
 	public class HistorySlot
@@ -131,10 +131,9 @@ namespace SabnzbdClient.Client.Entities
 		[DataMember(Name = "url_info")]
 		public string UrlInfo { get; set; }
 
-		public override bool Equals(object other)
+		public override bool Equals(object obj)
 		{
-			var otherSlot = other as HistorySlot;
-			if (otherSlot == null)
+			if (!(obj is HistorySlot otherSlot))
 			{
 				return false;
 			}

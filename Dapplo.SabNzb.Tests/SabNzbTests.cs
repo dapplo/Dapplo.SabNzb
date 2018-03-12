@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2018 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -63,7 +63,7 @@ namespace Dapplo.SabNzb.Tests
 		//[Fact]
 		public async Task TestAddFile()
 		{
-			var filename = @"path\filename.nzb";
+			const string filename = @"path\filename.nzb";
 			using (var filestream = new FileStream(filename, FileMode.Open, FileAccess.Read))
 			{
 				var nzoId = await _sabNzbClient.AddAsync(Path.GetFileName(filename), filestream, "Nice name");

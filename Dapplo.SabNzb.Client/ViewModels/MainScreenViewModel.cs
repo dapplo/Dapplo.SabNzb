@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2018 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -40,8 +40,8 @@ using Dapplo.CaliburnMicro.Extensions;
 using Dapplo.Log;
 using Dapplo.SabNzb.Client.Languages;
 using Dapplo.SabNzb.Client.Models;
+using Dapplo.SabNzb.Entities;
 using GongSolutions.Wpf.DragDrop;
-using SabnzbdClient.Client.Entities;
 using AsyncLock = Dapplo.Utils.AsyncLock;
 
 #endregion
@@ -70,17 +70,16 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		/// Is the view model currently on the screen?
 		/// </summary>
 		public bool CanBeShown {
-			get
-			{
-				return _canBeShown;
-			}
+			get => _canBeShown;
 			set
 			{
-				if (_canBeShown != value)
+				if (_canBeShown == value)
 				{
-					_canBeShown = value;
-					NotifyOfPropertyChange(nameof(CanBeShown));
+					return;
 				}
+
+				_canBeShown = value;
+				NotifyOfPropertyChange(nameof(CanBeShown));
 			}
 		}
 
@@ -131,7 +130,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		/// <summary>
 		/// Update by retrieving the information, call on UI!!
 		/// </summary>
-		private async Task UpdateAsync(CancellationToken token = default(CancellationToken))
+		private async Task UpdateAsync(CancellationToken token = default)
 		{
 			using (await _lock.LockAsync(token))
 			{
@@ -323,7 +322,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 					NzbName = $"blub{i}.nzb",
 					Size = $"{random.Next(0, 14000)} KB",
 					Status = "Completed",
-					Category = "Books",
+					Category = "Books"
 				};
 				HistorySlots.Add(slot);
 			}

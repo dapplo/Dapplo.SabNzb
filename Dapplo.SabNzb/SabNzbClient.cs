@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2018 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -31,7 +31,6 @@ using Dapplo.HttpExtensions;
 using Dapplo.HttpExtensions.JsonSimple;
 using Dapplo.SabNzb.Entities;
 using Dapplo.Utils.Extensions;
-using SabnzbdClient.Client.Entities;
 
 #endregion
 
@@ -110,7 +109,7 @@ namespace Dapplo.SabNzb
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>version as string</returns>
-		public async Task<string> GetVersionAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<string> GetVersionAsync(CancellationToken cancellationToken = default)
 		{
 			var versionUri = SabNzbApiUri.ExtendQuery("mode", "version");
 			_behaviour.MakeCurrent();
@@ -123,7 +122,7 @@ namespace Dapplo.SabNzb
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>List with categories</returns>
-		public async Task<IList<string>> GetCategoriesAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<IList<string>> GetCategoriesAsync(CancellationToken cancellationToken = default)
 		{
 			var categoriesUri = SabNzbApiUri.ExtendQuery("mode", "get_cats");
 			_behaviour.MakeCurrent();
@@ -136,7 +135,7 @@ namespace Dapplo.SabNzb
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>List with scripts</returns>
-		public async Task<IList<string>> GetScriptsAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<IList<string>> GetScriptsAsync(CancellationToken cancellationToken = default)
 		{
 			var scriptsUri = SabNzbApiUri.ExtendQuery("mode", "get_scripts");
 			_behaviour.MakeCurrent();
@@ -149,7 +148,7 @@ namespace Dapplo.SabNzb
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>List with warnings</returns>
-		public async Task<IList<string>> GetWarningsAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<IList<string>> GetWarningsAsync(CancellationToken cancellationToken = default)
 		{
 			var warningsUri = SabNzbApiUri.ExtendQuery("mode", "warnings");
 			_behaviour.MakeCurrent();
@@ -161,7 +160,7 @@ namespace Dapplo.SabNzb
 		///     Restart SabNzb
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task RestartAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task RestartAsync(CancellationToken cancellationToken = default)
 		{
 			var categoriesUri = SabNzbApiUri.ExtendQuery("mode", "restart");
 			_behaviour.MakeCurrent();
@@ -172,7 +171,7 @@ namespace Dapplo.SabNzb
 		///     Shutdown
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task ShutdownAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task ShutdownAsync(CancellationToken cancellationToken = default)
 		{
 			var shutdownApi = SabNzbApiUri.ExtendQuery("mode", "shutdown");
 			_behaviour.MakeCurrent();
@@ -188,7 +187,7 @@ namespace Dapplo.SabNzb
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>SabnzbDRoot</returns>
-		public async Task<Queue> GetQueueAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<Queue> GetQueueAsync(CancellationToken cancellationToken = default)
 		{
 			var queueUri = SabNzbApiUri.ExtendQuery("mode", "queue");
 			_behaviour.MakeCurrent();
@@ -200,7 +199,7 @@ namespace Dapplo.SabNzb
 		///     Pause queue
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task PauseQueueAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task PauseQueueAsync(CancellationToken cancellationToken = default)
 		{
 			var pauseUri = SabNzbApiUri.ExtendQuery("mode", "pause");
 			_behaviour.MakeCurrent();
@@ -211,7 +210,7 @@ namespace Dapplo.SabNzb
 		///     Pause post processing
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task PausePostProcessingAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task PausePostProcessingAsync(CancellationToken cancellationToken = default)
 		{
 			var pausePostProcessingUri = SabNzbApiUri.ExtendQuery("mode", "pause_pp");
 			_behaviour.MakeCurrent();
@@ -222,7 +221,7 @@ namespace Dapplo.SabNzb
 		///     Resume post processing
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task ResumePostProcessingAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task ResumePostProcessingAsync(CancellationToken cancellationToken = default)
 		{
 			var resumePostProcessingUri = SabNzbApiUri.ExtendQuery("mode", "resume_pp");
 			_behaviour.MakeCurrent();
@@ -233,7 +232,7 @@ namespace Dapplo.SabNzb
 		///     Resume queue
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task ResumeQueueAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task ResumeQueueAsync(CancellationToken cancellationToken = default)
 		{
 			var resumeUri = SabNzbApiUri.ExtendQuery("mode", "resume");
 			_behaviour.MakeCurrent();
@@ -246,7 +245,7 @@ namespace Dapplo.SabNzb
 		/// <param name="endOfQueueAction">EndOfQueueActions</param>
 		/// <param name="script">If EndOfQueueActions.Script is specified, also specify the script</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task ChangeEndOfQueueActionAsync(EndOfQueueActions endOfQueueAction, string script = null, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task ChangeEndOfQueueActionAsync(EndOfQueueActions endOfQueueAction, string script = null, CancellationToken cancellationToken = default)
 		{
 			var value = endOfQueueAction.EnumValueOf();
 			// In case of script, append this.
@@ -277,7 +276,7 @@ namespace Dapplo.SabNzb
 		/// </summary>
 		/// <param name="items">an ienumerable with item ids</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task DeleteFromQueueAsync(IEnumerable<string> items, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task DeleteFromQueueAsync(IEnumerable<string> items, CancellationToken cancellationToken = default)
 		{
 			var deleteUri = SabNzbApiUri.ExtendQuery(new Dictionary<string, string>
 			{
@@ -296,7 +295,7 @@ namespace Dapplo.SabNzb
 		/// <param name="id">string with the id of the slot</param>
 		/// <param name="script">name of the script</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task ChangeScriptAsync(string id, string script, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task ChangeScriptAsync(string id, string script, CancellationToken cancellationToken = default)
 		{
 			// api?mode=change_script&value=SABnzbd_nzo_zt2syz&value2=examplescript.cmd
 			var changeScriptUri = SabNzbApiUri.ExtendQuery(new Dictionary<string, string>
@@ -315,7 +314,7 @@ namespace Dapplo.SabNzb
 		/// <param name="id">string with the id of the slot</param>
 		/// <param name="category">category</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task ChangeCategoryAsync(string id, string category, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task ChangeCategoryAsync(string id, string category, CancellationToken cancellationToken = default)
 		{
 			// api?mode=change_cat&value=SABnzbd_nzo_zt2syz&value2=Example
 			var changeCategoryUri = SabNzbApiUri.ExtendQuery(new Dictionary<string, string>
@@ -334,7 +333,7 @@ namespace Dapplo.SabNzb
 		/// <param name="id">string with the id of the slot</param>
 		/// <param name="priority">priority</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task ChangePriorityAsync(string id, Priority priority, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task ChangePriorityAsync(string id, Priority priority, CancellationToken cancellationToken = default)
 		{
 			// api?mode=queue&name=priority&value=SABnzbd_nzo_zt2syz&value2=0
 			var changePriorityUri = SabNzbApiUri.ExtendQuery(new Dictionary<string, string>
@@ -354,7 +353,7 @@ namespace Dapplo.SabNzb
 		/// <param name="id">string with the id of the slot</param>
 		/// <param name="postProcessing">PostProcessing</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task ChangePostProcessingAsync(string id, PostProcessing postProcessing, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task ChangePostProcessingAsync(string id, PostProcessing postProcessing, CancellationToken cancellationToken = default)
 		{
 			//  api?mode=change_opts&value=SABnzbd_nzo_zt2syz&value2=0
 			var changePostProcessingUri = SabNzbApiUri.ExtendQuery(new Dictionary<string, string>
@@ -373,7 +372,7 @@ namespace Dapplo.SabNzb
 		/// <param name="id">string with the id of the slot</param>
 		/// <param name="name">New name</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task ChangeNameAsync(string id, string name, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task ChangeNameAsync(string id, string name, CancellationToken cancellationToken = default)
 		{
 			// api?mode=queue&name=rename&value=SABnzbd_nzo_zt2syz&value2=THENEWNAME
 			var changeNameUri = SabNzbApiUri.ExtendQuery(new Dictionary<string, string>
@@ -392,7 +391,7 @@ namespace Dapplo.SabNzb
 		/// </summary>
 		/// <param name="id">string with the id of the slot</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task PauseAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task PauseAsync(string id, CancellationToken cancellationToken = default)
 		{
 			// api?mode=queue&name=pause&value=SABnzbd_nzo_zt2syz
 			var pauseUri = SabNzbApiUri.ExtendQuery(new Dictionary<string, string>
@@ -410,7 +409,7 @@ namespace Dapplo.SabNzb
 		/// </summary>
 		/// <param name="id">string with the id of the slot</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task ResumeAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task ResumeAsync(string id, CancellationToken cancellationToken = default)
 		{
 			//  api?mode=queue&name=resume&value=SABnzbd_nzo_zt2syz
 			var pauseUri = SabNzbApiUri.ExtendQuery(new Dictionary<string, string>
@@ -429,7 +428,7 @@ namespace Dapplo.SabNzb
 		/// <param name="id">Id of the slot</param>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>QueueSlot</returns>
-		public async Task<QueueSlot> RetrieveDetailsAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<QueueSlot> RetrieveDetailsAsync(string id, CancellationToken cancellationToken = default)
 		{
 			// api?mode=get_files&output=xml&value=SABnzbd_nzo_zt2syz
 			var slotUri = SabNzbApiUri.ExtendQuery(new Dictionary<string, string>
@@ -451,7 +450,7 @@ namespace Dapplo.SabNzb
 		/// <param name="script">script to execute, </param>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>NZO Id</returns>
-		public async Task<string> AddAsync(Uri externalUri, string category = null, Priority priority = Priority.Default, string name = null, string script = null, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<string> AddAsync(Uri externalUri, string category = null, Priority priority = Priority.Default, string name = null, string script = null, CancellationToken cancellationToken = default)
 		{
 			var addUri = SabNzbApiUri.ExtendQuery("mode", "addurl");
 			addUri = addUri.ExtendQuery("name", externalUri.AbsoluteUri);
@@ -480,7 +479,7 @@ namespace Dapplo.SabNzb
 		/// <param name="nzbName">Nice name</param>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>NZO Id</returns>
-		public async Task<string> AddAsync(string filename, Stream filestream, string nzbName = null, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<string> AddAsync(string filename, Stream filestream, string nzbName = null, CancellationToken cancellationToken = default)
 		{
 			if (string.IsNullOrWhiteSpace(filename))
 			{
@@ -526,7 +525,7 @@ namespace Dapplo.SabNzb
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>SabnzbDRoot</returns>
-		public async Task<History> GetHistoryAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<History> GetHistoryAsync(CancellationToken cancellationToken = default)
 		{
 			var queueUri = SabNzbApiUri.ExtendQuery("mode", "history");
 			_behaviour.MakeCurrent();
@@ -541,7 +540,7 @@ namespace Dapplo.SabNzb
 		/// <param name="failedOnly"></param>
 		/// <param name="deleteFiles"></param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task DeleteFromHistoryAsync(IEnumerable<string> items, bool failedOnly = false, bool deleteFiles = false, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task DeleteFromHistoryAsync(IEnumerable<string> items, bool failedOnly = false, bool deleteFiles = false, CancellationToken cancellationToken = default)
 		{
 			// failed_only, when 1, delete only failed jobs
 			// del_files when 1, all files will be deleted too (only for failed jobs).
@@ -563,7 +562,7 @@ namespace Dapplo.SabNzb
 		/// </summary>
 		/// <param name="id">id of item to retry</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		public async Task RetryAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task RetryAsync(string id, CancellationToken cancellationToken = default)
 		{
 			//  api?mode=retry&value=SABnzbd_nzo_zt2syz
 			var retryUri = SabNzbApiUri.ExtendQuery(new Dictionary<string, string>

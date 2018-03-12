@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2018 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -64,12 +64,14 @@ namespace Dapplo.SabNzb.Client.ViewModels
         {
 #if DEBUG
             // For the designer
-            if (Execute.InDesignMode)
+            if (!Execute.InDesignMode)
             {
-                LogSettings.RegisterDefaultLogger<TraceLogger>(LogLevels.Verbose);
-                Log.Info().WriteLine("Running in designer");
-                LoadDesignData();
+                return;
             }
+
+            LogSettings.RegisterDefaultLogger<TraceLogger>(LogLevels.Verbose);
+            Log.Info().WriteLine("Running in designer");
+            LoadDesignData();
 #endif
         }
 
@@ -88,16 +90,19 @@ namespace Dapplo.SabNzb.Client.ViewModels
                 {
                     return false;
                 }
-                if (ConnectionConfiguration.UseHttpAuthentication)
+
+                if (!ConnectionConfiguration.UseHttpAuthentication)
                 {
-                    if (string.IsNullOrEmpty(ConnectionConfiguration.Username))
-                    {
-                        return false;
-                    }
-                    if (string.IsNullOrEmpty(ConnectionConfiguration.Password))
-                    {
-                        return false;
-                    }
+                    return true;
+                }
+
+                if (string.IsNullOrEmpty(ConnectionConfiguration.Username))
+                {
+                    return false;
+                }
+                if (string.IsNullOrEmpty(ConnectionConfiguration.Password))
+                {
+                    return false;
                 }
                 return true;
             }
@@ -108,14 +113,16 @@ namespace Dapplo.SabNzb.Client.ViewModels
         /// </summary>
         public bool IsConnected
         {
-            get { return _isConnected; }
+            get => _isConnected;
             set
             {
-                if (_isConnected != value)
+                if (_isConnected == value)
                 {
-                    _isConnected = value;
-                    NotifyOfPropertyChange(nameof(IsConnected));
+                    return;
                 }
+
+                _isConnected = value;
+                NotifyOfPropertyChange(nameof(IsConnected));
             }
         }
 

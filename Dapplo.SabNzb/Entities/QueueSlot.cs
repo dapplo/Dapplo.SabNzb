@@ -1,5 +1,5 @@
 //  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2018 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -21,12 +21,11 @@
 
 #region using
 
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 #endregion
 
-namespace SabnzbdClient.Client.Entities
+namespace Dapplo.SabNzb.Entities
 {
 	[DataContract]
 	public class QueueSlot
@@ -92,14 +91,13 @@ namespace SabnzbdClient.Client.Entities
 		{
 			return NzoId?.GetHashCode() ?? base.GetHashCode();
 		}
-		public override bool Equals(object other)
+		public override bool Equals(object obj)
 		{
-			var otherSlot = other as QueueSlot;
-			if (otherSlot == null)
+			if (!(obj is QueueSlot otherSlot))
 			{
 				return false;
 			}
-			return object.Equals(NzoId, otherSlot.NzoId);
+			return Equals(NzoId, otherSlot.NzoId);
 		}
 	}
 }

@@ -1,5 +1,5 @@
 //  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2018 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -25,7 +25,7 @@ using System.Runtime.Serialization;
 
 #endregion
 
-namespace SabnzbdClient.Client.Entities
+namespace Dapplo.SabNzb.Entities
 {
 	[DataContract]
 	public class SabnzbDRoot
