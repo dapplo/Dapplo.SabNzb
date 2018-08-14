@@ -22,7 +22,6 @@
 #region using
 
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Windows;
@@ -40,38 +39,45 @@ using MahApps.Metro.IconPacks;
 
 namespace Dapplo.SabNzb.Client.ViewModels
 {
-    [Export(typeof(ITrayIconViewModel))]
+    /// <summary>
+    /// This is the view model for the tray icon
+    /// </summary>
     public class SabNzbTrayIconViewModel : TrayIconViewModel, IHandle<string>
     {
+        private readonly ITrayIconManager _trayIconManager;
+        private readonly IEnumerable<IMenuItem> _contextMenuItems;
+        private readonly ConnectionViewModel _connectionViewModel;
+        private readonly IEventAggregator _eventAggregator;
+        private readonly MainScreenViewModel _mainScreenViewModel;
+        private readonly IContextMenuTranslations _contextMenuTranslations;
+        private readonly ICoreTranslations _coreTranslations;
+        private readonly IWindowManager _windowsManager;
         private CompositeDisposable _disposables;
 
-        [ImportMany("contextmenu", typeof(IMenuItem))]
-        private IEnumerable<IMenuItem> ContextMenuItems { get; set; }
-
-        [Import]
-        private ConnectionViewModel ConnectionVm { get; set; }
-
-        [Import]
-        public IContextMenuTranslations ContextMenuTranslations { get; set; }
-
-        [Import]
-        public ICoreTranslations CoreTranslations { get; set; }
-
-        [Import]
-        private IEventAggregator EventAggregator { get; set; }
-
-        [Import]
-        public MainScreenViewModel MainScreenVm { get; set; }
-
-        /// <summary>
-        ///     Used to show a "normal" dialog
-        /// </summary>
-        [Import]
-        private IWindowManager WindowsManager { get; set; }
+        public SabNzbTrayIconViewModel(
+            IEnumerable<IMenuItem> contextMenuItems,
+            IContextMenuTranslations contextMenuTranslations,
+            ITrayIconManager trayIconManager,
+            ICoreTranslations coreTranslations,
+            IEventAggregator eventAggregator,
+            IWindowManager windowsManager,
+            MainScreenViewModel mainScreenViewModel,
+            ConnectionViewModel connectionViewModel
+            ) : base(trayIconManager)
+        {
+            _trayIconManager = trayIconManager;
+            _contextMenuItems = contextMenuItems;
+            _connectionViewModel = connectionViewModel;
+            _contextMenuTranslations = contextMenuTranslations;
+            _coreTranslations = coreTranslations;
+            _eventAggregator = eventAggregator;
+            _mainScreenViewModel = mainScreenViewModel;
+            _windowsManager = windowsManager;
+        }
 
         public void Handle(string message)
         {
-            var trayIcon = TrayIconManager.GetTrayIconFor(this);
+            var trayIcon = _trayIconManager.GetTrayIconFor(this);
             trayIcon.ShowBalloonTip("Event", message);
         }
 
@@ -79,23 +85,23 @@ namespace Dapplo.SabNzb.Client.ViewModels
         {
 
             // Set the title of the icon (the ToolTipText) to our IContextMenuTranslations.Title
-            var coreTranslationsObservable = CoreTranslations.CreateDisplayNameBinding(this, nameof(ICoreTranslations.Title));
+            var coreTranslationsObservable = _coreTranslations.CreateDisplayNameBinding(this, nameof(ICoreTranslations.Title));
             _disposables.Add(coreTranslationsObservable);
 
 
-            var items = ContextMenuItems.ToList();
+            var items = _contextMenuItems.ToList();
             items.Add(new ClickableMenuItem
             {
                 Id = "V_Main",
                 ClickAction = menuItem =>
                 {
-                    if (!MainScreenVm.IsActive)
+                    if (!_mainScreenViewModel.IsActive)
                     {
-                        WindowsManager.ShowDialog(MainScreenVm);
+                        _windowsManager.ShowDialog(_mainScreenViewModel);
                     }
                 }
             });
-            var contextMenuDisplayNameBinding = ContextMenuTranslations.CreateDisplayNameBinding(items.Last(), nameof(IContextMenuTranslations.ShowMain));
+            var contextMenuDisplayNameBinding = _contextMenuTranslations.CreateDisplayNameBinding(items.Last(), nameof(IContextMenuTranslations.ShowMain));
 
             _disposables.Add(contextMenuDisplayNameBinding);
 
@@ -105,13 +111,13 @@ namespace Dapplo.SabNzb.Client.ViewModels
                 Id = "X_Configure",
                 ClickAction = menuItem =>
                 {
-                    if (!ConnectionVm.IsActive)
+                    if (!_connectionViewModel.IsActive)
                     {
-                        WindowsManager.ShowDialog(ConnectionVm);
+                        _windowsManager.ShowDialog(_connectionViewModel);
                     }
                 }
             });
-            contextMenuDisplayNameBinding.AddDisplayNameBinding(items.Last(),nameof(IContextMenuTranslations.Configure));
+            contextMenuDisplayNameBinding.AddDisplayNameBinding(items.Last(), nameof(IContextMenuTranslations.Configure));
 
             items.Add(new MenuItem
             {
@@ -150,7 +156,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
             });
 
             Show();
-            EventAggregator.Subscribe(this);
+            _eventAggregator.Subscribe(this);
         }
 
         protected override void OnDeactivate(bool close)

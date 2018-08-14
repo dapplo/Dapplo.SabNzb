@@ -28,9 +28,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions;
+using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.JsonSimple;
 using Dapplo.SabNzb.Entities;
-using Dapplo.Utils.Extensions;
 
 #endregion
 

@@ -22,7 +22,6 @@
 #region using
 
 using System;
-using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using Dapplo.Log;
@@ -44,24 +43,25 @@ namespace Dapplo.SabNzb.Client.ViewModels
     ///     This ViewModel is both the holder of the SabNzbClient and
     ///     the dialog to change the settings.
     /// </summary>
-    [Export]
-    public class ConnectionViewModel : Screen, IPartImportsSatisfiedNotification
+    public class ConnectionViewModel : Screen
     {
         private static readonly LogSource Log = new LogSource();
+        private readonly INetworkConfiguration _networkConfiguration;
         private bool _isConnected;
         private IDisposable _eventRegistrations;
 
-        [Import]
-        public IConnectionConfiguration ConnectionConfiguration { get; set; }
+        public IConnectionConfiguration ConnectionConfiguration { get; }
 
-        [Import]
-        public IConnectionTranslations ConnectionTranslations { get; set; }
+        public IConnectionTranslations ConnectionTranslations { get; private set; }
 
-        [Import]
-        private INetworkConfiguration NetworkConfiguration { get; set; }
-
-        public ConnectionViewModel()
+        public ConnectionViewModel(
+            INetworkConfiguration networkConfiguration,
+            IConnectionTranslations connectionTranslations,
+            IConnectionConfiguration connectionConfiguration)
         {
+            _networkConfiguration = networkConfiguration;
+            ConnectionTranslations = connectionTranslations;
+            ConnectionConfiguration = connectionConfiguration;
 #if DEBUG
             // For the designer
             if (!Execute.InDesignMode)
@@ -73,6 +73,18 @@ namespace Dapplo.SabNzb.Client.ViewModels
             Log.Info().WriteLine("Running in designer");
             LoadDesignData();
 #endif
+            // Make sure the settings from the configuration file are used.
+            HttpExtensionsGlobals.HttpSettings = _networkConfiguration;
+
+            if (IsConfigured)
+            {
+                // Make the "connection"
+                Task.Run(async () => await Connect());
+            }
+            ConnectionConfiguration.OnPropertyChanged().Subscribe(propertyChangedEventArgs =>
+            {
+                NotifyOfPropertyChange(nameof(IsConnected));
+            });
         }
 
         /// <summary>
@@ -127,22 +139,6 @@ namespace Dapplo.SabNzb.Client.ViewModels
         }
 
         public SabNzbClient SabNzbClient { get; private set; }
-
-        public void OnImportsSatisfied()
-        {
-            // Make sure the settings from the configuration file are used.
-            HttpExtensionsGlobals.HttpSettings = NetworkConfiguration;
-
-            if (IsConfigured)
-            {
-                // Make the "connection"
-                Task.Run(async () => await Connect());
-            }
-            ConnectionConfiguration.OnPropertyChanged().Subscribe(propertyChangedEventArgs =>
-            {
-                NotifyOfPropertyChange(nameof(IsConnected));
-            });
-        }
 
         protected override void OnActivate()
         {

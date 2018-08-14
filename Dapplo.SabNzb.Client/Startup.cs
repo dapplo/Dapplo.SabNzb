@@ -24,6 +24,8 @@
 using System;
 using System.Diagnostics;
 using System.Windows;
+using Dapplo.Addons.Bootstrapper;
+using Dapplo.Addons.Config;
 using Dapplo.CaliburnMicro.Dapp;
 using Dapplo.Ini.Converters;
 using Dapplo.Log;
@@ -39,21 +41,38 @@ namespace Dapplo.SabNzb.Client
 		///     Start the application
 		/// </summary>
 		[STAThread, DebuggerNonUserCode]
-		public static void Main()
+		public static int Main()
 		{
 #if DEBUG
 			// Initialize a debug logger for Dapplo packages
 			LogSettings.RegisterDefaultLogger<DebugLogger>(LogLevels.Verbose);
 #endif
-			var dapplication = new Dapplication("Dapplo.SabNZB", "68cb5937-90cd-4a17-9d30-d68fa9906cd6")
+
+		    var applicationConfig = ApplicationConfigBuilder.Create()
+		        .WithApplicationName("Dapplo.SabNZB")
+		        .WithMutex("68cb5937-90cd-4a17-9d30-d68fa9906cd6")
+		        .WithCaliburnMicro()
+		        .WithConfigSupport()
+		        // Activate automatic "IniSection" resolving
+		        .WithIniSectionResolving()
+		        // Activate automatic "ILanguage" resolving
+		        .WithLanguageResolving()
+                .BuildApplicationConfig();
+			var dapplication = new Dapplication(applicationConfig)
 			{
 				ShutdownMode = ShutdownMode.OnExplicitShutdown
 			};
+
+		    if (dapplication.WasAlreadyRunning)
+		    {
+		        return -1;
+		    }
 
 			StringEncryptionTypeConverter.RgbIv = "0@94hFj3&E4r!k231E!";
 			StringEncryptionTypeConverter.RgbKey = "lkfwWF/63)=ßDeefkez4§Rf33g39hh§F";
 
 			dapplication.Run();
+		    return 0;
 		}
 	}
 }

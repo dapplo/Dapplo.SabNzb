@@ -25,7 +25,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -39,32 +38,30 @@ using Dapplo.CaliburnMicro;
 using Dapplo.CaliburnMicro.Extensions;
 using Dapplo.Log;
 using Dapplo.SabNzb.Client.Languages;
-using Dapplo.SabNzb.Client.Models;
 using Dapplo.SabNzb.Entities;
 using GongSolutions.Wpf.DragDrop;
-using AsyncLock = Dapplo.Utils.AsyncLock;
 
 #endregion
 
 namespace Dapplo.SabNzb.Client.ViewModels
 {
-	[Export(typeof(IShell))]
-	[Export]
+    /// <summary>
+    /// The shell, main screen
+    /// </summary>
 	public class MainScreenViewModel : Conductor<Screen>.Collection.OneActive, IShell, IDropTarget
 	{
 		private static readonly LogSource Log = new LogSource();
-		private readonly AsyncLock _lock = new AsyncLock();
+	    private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 		private bool _canBeShown;
 		private IDisposable _eventRegistrations;
 
-		[Import]
-		public ICoreTranslations CoreTranslations { get; set; }
+	    /// <summary>
+	    ///     Used to show a "normal" dialog
+	    /// </summary>
+	    private readonly IWindowManager _windowsManager;
+	    private readonly ConnectionViewModel _connectionViewModel;
 
-		[Import]
-		public IConnectionConfiguration ConnectionConfiguration { get; set; }
-
-		[Import]
-		private ConnectionViewModel ConnectionVm { get; set; }
+		public ICoreTranslations CoreTranslations { get; }
 
 		/// <summary>
 		/// Is the view model currently on the screen?
@@ -86,17 +83,15 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		public Queue SabNzbQueue { get; set; }
 		public History SabNzbHistory { get; set; }
 
-		public ObservableCollection<QueueSlot> QueuedSlots { get; set; } = new ObservableCollection<QueueSlot>();
-		public ObservableCollection<HistorySlot> HistorySlots { get; set; } = new ObservableCollection<HistorySlot>();
+		public ObservableCollection<QueueSlot> QueuedSlots { get; } = new ObservableCollection<QueueSlot>();
+		public ObservableCollection<HistorySlot> HistorySlots { get; } = new ObservableCollection<HistorySlot>();
 
-		/// <summary>
-		///     Used to show a "normal" dialog
-		/// </summary>
-		[Import]
-		private IWindowManager WindowsManager { get; set; }
 
-		public MainScreenViewModel()
+		public MainScreenViewModel(IWindowManager windowsManager, ConnectionViewModel connectionViewModel, ICoreTranslations coreTranslations)
 		{
+		    _windowsManager = windowsManager;
+		    _connectionViewModel = connectionViewModel;
+		    CoreTranslations = coreTranslations;
 #if DEBUG
 			// For the designer
 			if (Execute.InDesignMode)
@@ -112,7 +107,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		public void Configure()
 		{
 			// Test if there are settings, if not show the configuration
-			var result = WindowsManager.ShowDialog(ConnectionVm);
+			var result = _windowsManager.ShowDialog(_connectionViewModel);
 			if (result == true)
 			{
 				// ???
@@ -124,95 +119,101 @@ namespace Dapplo.SabNzb.Client.ViewModels
 		/// </summary>
 		public async Task Pause()
 		{
-			await ConnectionVm.SabNzbClient.PauseQueueAsync();
+			await _connectionViewModel.SabNzbClient.PauseQueueAsync();
 		}
 
 		/// <summary>
 		/// Update by retrieving the information, call on UI!!
 		/// </summary>
-		private async Task UpdateAsync(CancellationToken token = default)
+		private async Task UpdateAsync(CancellationToken cancellationToken = default)
 		{
-			using (await _lock.LockAsync(token))
-			{
-				if (!ConnectionVm.IsConfigured)
-				{
-					return;
-				}
+		    await _semaphoreSlim.WaitAsync(cancellationToken);
+		    try
+		    {
+                if (!_connectionViewModel.IsConfigured)
+                {
+                    return;
+                }
 
-				if (!ConnectionVm.IsConnected)
-				{
-					await ConnectionVm.Connect();
-				}
+                if (!_connectionViewModel.IsConnected)
+                {
+                    await _connectionViewModel.Connect();
+                }
 
-				var client = ConnectionVm.SabNzbClient;
+                var client = _connectionViewModel.SabNzbClient;
 
-				// TODO: Extract the queue information into a VM.
-				SabNzbQueue = await client.GetQueueAsync(token);
-				if (SabNzbQueue == null)
-				{
-					// No queue
-					return;
-				}
-				OnPropertyChanged(new PropertyChangedEventArgs(nameof(SabNzbQueue)));
-				foreach (var slot in SabNzbQueue.Slots)
-				{
-					var queueSlotIndex = QueuedSlots.IndexOf(slot);
-					if (queueSlotIndex < 0)
-					{
-						QueuedSlots.Add(slot);
-					}
-					else
-					{
-						QueuedSlots.RemoveAt(queueSlotIndex);
-						if (QueuedSlots.Count == queueSlotIndex)
-						{
-							QueuedSlots.Add(slot);
-						}
-						else
-						{
-							QueuedSlots.Insert(queueSlotIndex, slot);
-						}
-					}
-				}
-				// Find the slots that are no longer in the queue
-				var finishedSlots = QueuedSlots.Where(x => !SabNzbQueue.Slots.Contains(x)).ToList();
-				// TODO: Notify!?
-				foreach (var finishedSlot in finishedSlots)
-				{
-					QueuedSlots.Remove(finishedSlot);
-				}
+                // TODO: Extract the queue information into a VM.
+                SabNzbQueue = await client.GetQueueAsync(cancellationToken);
+                if (SabNzbQueue == null)
+                {
+                    // No queue
+                    return;
+                }
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(SabNzbQueue)));
+                foreach (var slot in SabNzbQueue.Slots)
+                {
+                    var queueSlotIndex = QueuedSlots.IndexOf(slot);
+                    if (queueSlotIndex < 0)
+                    {
+                        QueuedSlots.Add(slot);
+                    }
+                    else
+                    {
+                        QueuedSlots.RemoveAt(queueSlotIndex);
+                        if (QueuedSlots.Count == queueSlotIndex)
+                        {
+                            QueuedSlots.Add(slot);
+                        }
+                        else
+                        {
+                            QueuedSlots.Insert(queueSlotIndex, slot);
+                        }
+                    }
+                }
+                // Find the slots that are no longer in the queue
+                var finishedSlots = QueuedSlots.Where(x => !SabNzbQueue.Slots.Contains(x)).ToList();
+                // TODO: Notify!?
+                foreach (var finishedSlot in finishedSlots)
+                {
+                    QueuedSlots.Remove(finishedSlot);
+                }
 
-				// TODO: Extract the history information into a VM.
-				SabNzbHistory = await client.GetHistoryAsync(token);
-				OnPropertyChanged(new PropertyChangedEventArgs(nameof(SabNzbHistory)));
-				foreach (var slot in SabNzbHistory.Slots)
-				{
-					var historySlotIndex = HistorySlots.IndexOf(slot);
-					if (historySlotIndex < 0)
-					{
-						HistorySlots.Add(slot);
-					}
-					else
-					{
-						HistorySlots.RemoveAt(historySlotIndex);
-						if (HistorySlots.Count == historySlotIndex)
-						{
-							HistorySlots.Add(slot);
-						}
-						else
-						{
-							HistorySlots.Insert(historySlotIndex, slot);
-						}
-					}
-				}
-				// Find the slots that are no longer in the history
-				var finishedHistorySlots = HistorySlots.Where(x => !SabNzbHistory.Slots.Contains(x)).ToList();
-				// TODO: Notify!?
-				foreach (var finishedHistorySlot in finishedHistorySlots)
-				{
-					HistorySlots.Remove(finishedHistorySlot);
-				}
-			}
+                // TODO: Extract the history information into a VM.
+                SabNzbHistory = await client.GetHistoryAsync(cancellationToken);
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(SabNzbHistory)));
+                foreach (var slot in SabNzbHistory.Slots)
+                {
+                    var historySlotIndex = HistorySlots.IndexOf(slot);
+                    if (historySlotIndex < 0)
+                    {
+                        HistorySlots.Add(slot);
+                    }
+                    else
+                    {
+                        HistorySlots.RemoveAt(historySlotIndex);
+                        if (HistorySlots.Count == historySlotIndex)
+                        {
+                            HistorySlots.Add(slot);
+                        }
+                        else
+                        {
+                            HistorySlots.Insert(historySlotIndex, slot);
+                        }
+                    }
+                }
+                // Find the slots that are no longer in the history
+                var finishedHistorySlots = HistorySlots.Where(x => !SabNzbHistory.Slots.Contains(x)).ToList();
+                // TODO: Notify!?
+                foreach (var finishedHistorySlot in finishedHistorySlots)
+                {
+                    HistorySlots.Remove(finishedHistorySlot);
+                }
+
+            }
+            finally
+		    {
+		        _semaphoreSlim.Release();
+		    }
 		}
 
 		/// <summary>
@@ -249,7 +250,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 			});
 			base.OnActivate();
 			CanBeShown = false;
-			if (!ConnectionVm.IsConfigured)
+			if (!_connectionViewModel.IsConfigured)
 			{
 				// Just call configure
 				Configure();
@@ -262,7 +263,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 			return dragFileList.Any(item =>
 			{
 				var extension = Path.GetExtension(item);
-				return ConnectionVm.IsConnected && extension != null && extension.Equals(".nzb");
+				return _connectionViewModel.IsConnected && extension != null && extension.Equals(".nzb");
 			}) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 		void IDropTarget.DragOver(IDropInfo dropInfo)
@@ -282,7 +283,7 @@ namespace Dapplo.SabNzb.Client.ViewModels
 				{
 					using (var filestream = new FileStream(nzbFile, FileMode.Open, FileAccess.Read))
 					{
-						var nzoId = await ConnectionVm.SabNzbClient.AddAsync(Path.GetFileName(nzbFile), filestream);
+						var nzoId = await _connectionViewModel.SabNzbClient.AddAsync(Path.GetFileName(nzbFile), filestream);
 						Log.Info().WriteLine("Added {0}", nzoId);
 					}
 				}
